@@ -1,4 +1,4 @@
-program MTChem
+program wQC
     use def
     use cint
     

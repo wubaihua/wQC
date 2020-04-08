@@ -1,7 +1,7 @@
 FC = ifort
 
-mtchem:  constant.o math.o cint.o def.o geo.o HF.o fileio.o MTChem.o
-	${FC} -o mtchem *.f90 -mkl -lcint
+wqc:  constant.o math.o cint.o def.o geo.o HF.o fileio.o wQC.o
+	${FC} -o wqc *.f90 -mkl -lcint
 
 constant.o: constant.f90
 	${FC} -c constant.f90
@@ -39,8 +39,8 @@ HF.o: HF.f90 geo.mod math.mod def.mod
 fileio.o: fileio.f90 def.mod
 	${FC} -c fileio.f90 def.mod
 
-MTChem.o: MTChem.f90 def.mod cint.mod
-	${FC} -c MTChem.f90 def.mod cint.mod
+wQC.o: wQC.f90 def.mod cint.mod
+	${FC} -c wQC.f90 def.mod cint.mod
 
 
 
