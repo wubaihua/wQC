@@ -35,7 +35,7 @@ program wQC
     if(spinmul>1)write(*,*)'Open Shell molecule'
     close(10)
     
-    open(20,file="sto-3g.gbs",status="old")
+    open(20,file="def2svp.gbs",status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     write(*,*) 'nshl=',nshl
     write(*,*) 'nprim=',nprim
@@ -84,7 +84,7 @@ program wQC
     
     
     
-pause
+
 end program
 
 

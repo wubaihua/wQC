@@ -26,6 +26,7 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
+    logical conv
     
     call mat_power(nbas,S,-0.5_8,S_haf)
     H_core=T+V
@@ -79,8 +80,9 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     
     
     icyc=1
+    conv=.false.
     
-    do while(icyc<12)
+    do while(icyc<128)
         
         do i=1,nbas
             do j=1,nbas 
@@ -94,7 +96,9 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
         end do 
         
         call dia_symmat(nbas,Fock,E,C)
-    
+        
+        C=matmul(S_haf,C)
+
         Di=0
         do i=1,nbas
             do j=1,nbas
@@ -140,9 +144,32 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
         icyc=icyc+1
         
         
-        if(deltaE<1.0E-6 .and. rmsd<1.0E-8)exit
+        if(deltaE<1.0E-6 .and. rmsd<1.0E-8)then
+            conv=.true.
+            exit
+        end if
+
     end do
     
+    if(.not. conv)then
+        write(*,*) "ERROR!!!!!!!!!!!!!!"
+        write(*,*) "SCF fails to convergeat at",128,"step."
+        return
+    end if
+
+    write(*,*) "SCF convergence at",icyc,"step."
+    write(*,*) "The RHF orbital eigenvalues are"
+
+    do i=1,nbas
+        if(i<=nele/2)then
+            write(*,*) "occ.",E(i)
+        else
+            write(*,*) "virt.",E(i)
+        end if
+    end do
+
+
+
 
 
 
