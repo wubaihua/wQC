@@ -1,3 +1,19 @@
+! This file is a part of wQC.
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+! module cint: using Libcint(J.Compet.Chem.2015,36,1664–1671) to calculate 
+! single and double electronic integral and build the overlap, kinetic and 
+! potential matrix.
+
+! The code in this file refers to St Maxwell's website
+! (https://gensoukyo.me/use-libcint/). Author thanks for his contribution.
+! Author also wants to thanks Dr. Qiming Sun, the author of Libcint, for 
+! some advices about using Libcint.
+
+
 module cint
     implicit none
     integer, dimension(:,:), allocatable :: atm

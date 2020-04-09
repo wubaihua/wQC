@@ -1,3 +1,16 @@
+! wQC: a simple fortran Quantum Chemistry / Electronic Structure Program
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+! This program is still unfinished. It may still have some bugs which
+! can make wrong result. I will still develop and maintain this program. 
+
+
+
+! This file is the main program part of wQC.
+
 program wQC
     use def
     use cint

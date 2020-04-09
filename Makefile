@@ -28,19 +28,19 @@ def.mod: def.f90 def.o
 	${FC} -c def.f90 
 
 geo.o: geo.f90 def.mod math.o
-	${FC} -c geo.f90 def.mod math.o -mkl
+	${FC} -c geo.f90 -mkl #def.mod math.o -mkl
 
 geo.mod: geo.f90 geo.o def.mod math.o
-	${FC} -c geo.f90 def.mod math.o -mkl
+	${FC} -c geo.f90 -mkl #def.mod math.o -mkl
 
 HF.o: HF.f90 geo.mod math.mod def.mod
-	${FC} -c HF.f90 geo.mod math.mod def.mod -mkl
+	${FC} -c HF.f90 -mkl #geo.mod math.mod def.mod -mkl
 
 fileio.o: fileio.f90 def.mod
-	${FC} -c fileio.f90 def.mod
+	${FC} -c fileio.f90 #def.mod
 
 wQC.o: wQC.f90 def.mod cint.mod
-	${FC} -c wQC.f90 def.mod cint.mod
+	${FC} -c wQC.f90 #def.mod cint.mod
 
 
 
