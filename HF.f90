@@ -24,7 +24,7 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     integer nbas,nele,i,j,m
     real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
     real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
-    real*8 S_haf(nbas,nbas),Fock(nbas,nbas)
+    real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
     logical conv
     
@@ -60,6 +60,7 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
         end do
     end do
 
+    
 
     write(*,*) "D="
     do i=1,nbas
@@ -69,7 +70,7 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     E_ele=0
     do i=1,nbas
         do j=1,nbas
-            E_ele=E_ele+D(i,j)*(H_core(i,j)+Fock(i,j))
+            E_ele=E_ele+D(j,i)*(H_core(i,j)+Fock(i,j))
         end do
     end do
     
@@ -94,8 +95,20 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
                 end do
             end do
         end do 
+
+        write(*,*) "Fock="
+        do i=1,nbas
+            write(*,*) Fock(i,:)
+        end do
+
+        Fock_orth=matmul(matmul(transpose(S_haf),Fock),S_haf)
+
+        ! write(*,*) "Fock="
+        ! do i=1,nbas
+        !     write(*,*) Fock(i,:)
+        ! end do
         
-        call dia_symmat(nbas,Fock,E,C)
+        call dia_symmat(nbas,Fock_orth,E,C)
         
         C=matmul(S_haf,C)
 
@@ -107,13 +120,34 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
                 end do
             end do
         end do
+
+        ! do i=1,nbas
+        !     do j=1,nbas
+        !         if(Di(i,j)<1E-10)then
+        !             Di(i,j)=0
+        !         end if
+        !     end do
+        ! end do
+
+        write(*,*) "Di="
+        do i=1,nbas
+            write(*,*) Di(i,:)
+        end do
+
     
         E_elei=0
         do i=1,nbas
             do j=1,nbas
-                E_elei=E_elei+Di(i,j)*(H_core(i,j)+Fock(i,j))
+                E_elei=E_elei+Di(j,i)*(H_core(i,j)+Fock(i,j))
             end do
         end do
+
+        ! E_elei=0
+        ! do i=1,nele/2
+            
+        !     E_elei=E_elei+H_core(i,i)+E(i)
+            
+        ! end do
     
         E_toti=E_elei+nucp
 

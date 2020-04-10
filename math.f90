@@ -175,7 +175,21 @@ subroutine mat_power(n,A,r,AR)
     
 end subroutine
 
+!calculate e to the power of symmetric matrix A: e^A
+subroutine exp_mat(n,A,eA)
+    implicit none
+    integer n,i
+    real*8 A(n,n),E(n),U(n,n),eE(n,n),eA(n,n)
 
+    call dia_symmat(n,A,E,U)
+    eE=0
+    do i=1,n
+        eE(i,i)=exp(E(i))
+    end do
+
+    eA=matmul(matmul(U,eE),transpose(U))
+
+end subroutine
 
 
 
