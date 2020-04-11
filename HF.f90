@@ -4,6 +4,8 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
+! Last update: 2020-4-11
+
 !   HF: the part about Hartree-Fock method, including Restricted HF.
 
 
@@ -172,11 +174,13 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         end do
         rmsd=rmsd**0.5
         
-        write(idout,*) "step=",icyc
-        write(idout,*) "E_tot=",E_toti
-        write(idout,*) "delta_E=",deltaE
+        write(idout,"(a)") "//////////////////////////////////////////"
+        write(idout,*) "SCF step=",icyc
+        write(idout,*) "E_tot=",E_toti,"a.u."
+        write(idout,*) "delta_E=",deltaE,"a.u."
         write(idout,*) "RMSD=",rmsd
-        
+        write(idout,"(a)") "//////////////////////////////////////////"
+
         E_tot=E_toti
         E_ele=E_elei
         D=Di
@@ -194,14 +198,23 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
 
     end do
     
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
     if(.not. conv)then
         write(idout,*) "ERROR!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"step."
+        write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
     end if
 
     write(idout,*) "SCF convergence at",icyc,"step."
-    write(idout,*) "The RHF orbital eigenvalues are"
+    write(idout,*) "The Electronic Energy is"
+    write(idout,*) "E_ele=",E_ele,"a.u."
+    write(idout,*) 
+    write(idout,*) "The Total Energy is"
+    write(idout,*) "E_tot=",E_tot,"a.u."
+    write(idout,*) 
+    write(idout,*) "The RHF orbital eigenvalues are (a.u.)"
 
     do i=1,nbas
         if(i<=nele/2)then
@@ -211,7 +224,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         end if
     end do
 
-
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 
 

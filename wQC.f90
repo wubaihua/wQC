@@ -8,7 +8,7 @@
 ! This program is still unfinished. It may still have some bugs which
 ! can make wrong result. I will still develop and maintain this program. 
 
-
+! Last update: 2020-4-11
 
 ! This file is the main program part of wQC.
 
@@ -37,6 +37,8 @@ program wQC
     open(10, file=trim(filepath), status='old')  
 
     open(15,file=filepath(1:len(trim(filepath))-4)//".out")
+
+    call cpu_time(t1)
 
     call out_init(15,filepath)
     write(15,*) "load file successfully!"
@@ -99,8 +101,10 @@ program wQC
     allocate(D(nbas,nbas))
     allocate(E(nbas))
     call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
-    
-    
+
+    call cpu_time(t2)
+    write(15,*) "Job Time:",t2-t1,"Seconds"
+    write(15,"(a)") "End wQC"
     
     
     
