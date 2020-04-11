@@ -1,3 +1,12 @@
+! This file is a part of wQC(https://github.com/wubaihua/wQC)
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+!   HF: the part about Hartree-Fock method, including Restricted HF.
+
+
 subroutine cal_nucp(atom,natom,nucp)
     use def
     !use math
@@ -18,10 +27,10 @@ subroutine cal_nucp(atom,natom,nucp)
 end subroutine
 
     
-subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
+subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
     use math
     implicit real*8(a-h,o-z)
-    integer nbas,nele,i,j,m
+    integer nbas,nele,i,j,m,idout
     real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
     real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
@@ -33,23 +42,23 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     
     Fock=matmul(matmul(transpose(S_haf),H_core),S_haf)
 
-    write(*,*) "Fock="
-    do i=1,nbas
-        write(*,*) Fock(i,:)
-    end do
+    ! write(idout,*) "Fock="
+    ! do i=1,nbas
+    !     write(idout,*) Fock(i,:)
+    ! end do
 
     
     call dia_symmat(nbas,Fock,E,C)
 
-    write(*,*) "C="
-    do i=1,nbas
-        write(*,*) C(i,:)
-    end do
+    ! write(idout,*) "C="
+    ! do i=1,nbas
+    !     write(idout,*) C(i,:)
+    ! end do
 
-    write(*,*) "E="
-    do i=1,nbas
-        write(*,*) E(i)
-    end do
+    ! write(idout,*) "E="
+    ! do i=1,nbas
+    !     write(idout,*) E(i)
+    ! end do
     
     D=0
     do i=1,nbas
@@ -62,10 +71,10 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
 
     
 
-    write(*,*) "D="
-    do i=1,nbas
-        write(*,*) D(i,:)
-    end do
+    ! write(idout,*) "D="
+    ! do i=1,nbas
+    !     write(idout,*) D(i,:)
+    ! end do
     
     E_ele=0
     do i=1,nbas
@@ -76,8 +85,8 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     
     E_tot=E_ele+nucp
 
-    write(*,*) "E_ele=",E_ele
-    write(*,*) "E_tot=",E_tot
+    ! write(idout,*) "E_ele=",E_ele
+    ! write(idout,*) "E_tot=",E_tot
     
     
     icyc=1
@@ -96,10 +105,10 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
             end do
         end do 
 
-        write(*,*) "Fock="
-        do i=1,nbas
-            write(*,*) Fock(i,:)
-        end do
+        ! write(idout,*) "Fock="
+        ! do i=1,nbas
+        !     write(idout,*) Fock(i,:)
+        ! end do
 
         Fock_orth=matmul(matmul(transpose(S_haf),Fock),S_haf)
 
@@ -129,10 +138,10 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
         !     end do
         ! end do
 
-        write(*,*) "Di="
-        do i=1,nbas
-            write(*,*) Di(i,:)
-        end do
+        ! write(idout,*) "Di="
+        ! do i=1,nbas
+        !     write(idout,*) Di(i,:)
+        ! end do
 
     
         E_elei=0
@@ -163,10 +172,10 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
         end do
         rmsd=rmsd**0.5
         
-        write(*,*) "step=",icyc
-        write(*,*) "E_tot=",E_toti
-        write(*,*) "delta_E=",deltaE
-        write(*,*) "RMSD=",rmsd
+        write(idout,*) "step=",icyc
+        write(idout,*) "E_tot=",E_toti
+        write(idout,*) "delta_E=",deltaE
+        write(idout,*) "RMSD=",rmsd
         
         E_tot=E_toti
         E_ele=E_elei
@@ -186,19 +195,19 @@ subroutine RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
     end do
     
     if(.not. conv)then
-        write(*,*) "ERROR!!!!!!!!!!!!!!"
-        write(*,*) "SCF fails to convergeat at",128,"step."
+        write(idout,*) "ERROR!!!!!!!!!!!!!!"
+        write(idout,*) "SCF fails to convergeat at",128,"step."
         return
     end if
 
-    write(*,*) "SCF convergence at",icyc,"step."
-    write(*,*) "The RHF orbital eigenvalues are"
+    write(idout,*) "SCF convergence at",icyc,"step."
+    write(idout,*) "The RHF orbital eigenvalues are"
 
     do i=1,nbas
         if(i<=nele/2)then
-            write(*,*) "occ.",E(i)
+            write(idout,*) "occ.",E(i)
         else
-            write(*,*) "virt.",E(i)
+            write(idout,*) "virt.",E(i)
         end if
     end do
 

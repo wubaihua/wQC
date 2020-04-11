@@ -1,3 +1,13 @@
+! This file is a part of wQC(https://github.com/wubaihua/wQC)
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+! filoio: the file input/output part of wQC. 
+
+
+
 subroutine get_natom(idinp,natom)
     implicit none
     integer idinp,natom,ierror
@@ -241,4 +251,27 @@ else
 	end do
 end if
 if (present(ifound)) ifound=0
+end subroutine
+
+
+
+
+
+
+
+subroutine out_init(idout,filepath)
+    implicit none
+    integer idout
+    character*200 filepath
+    
+    write(idout,"(a)") "##########################################################################"
+    write(idout,"(a)") "#  wQC: a simple fortran Quantum Chemistry/Electronic Structure Program  #"
+    write(idout,"(a)") "#  Author:   Baihua Wu   (wubaihua@pku.edu.cn)                           #"    
+    write(idout,"(a)") "##########################################################################"
+    write(idout,*)
+    write(idout,"(a)") "wQC input file:"
+    write(idout,"(a)") trim(filepath)
+
+
+
 end subroutine

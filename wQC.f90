@@ -1,4 +1,5 @@
-! wQC: a simple fortran Quantum Chemistry / Electronic Structure Program
+! wQC: a simple fortran Quantum Chemistry/Electronic Structure Program
+!(https://github.com/wubaihua/wQC)
 
 ! Author:
 ! > Baihua Wu
@@ -16,9 +17,9 @@ program wQC
     use cint
     
     implicit real*8(a-h,o-z)
-    character*200::filepath,string
+    character*200::filepath,string,basispath,outpath
+    character, allocatable :: filename(:)
     integer:: chr,spinmul
-    integer,external :: GetFileN
     type(atomtype) atom(:)
     allocatable atom
     integer,allocatable :: cntr_odr(:),angl(:),shl_belong_to_atom(:),sh_indx(:),charge(:)
@@ -29,29 +30,35 @@ program wQC
     
     write(*,*)"Input the file path:"
     
-!11  read*, filepath
-    filepath="H2O.txt"
+    read*, filepath
+    !filepath="H2.txt     "
         
     
-    open(10, file=trim(filepath), status='old')    
-    write(*,*) "load file successfully!"
+    open(10, file=trim(filepath), status='old')  
+
+    open(15,file=filepath(1:len(trim(filepath))-4)//".out")
+
+    call out_init(15,filepath)
+    write(15,*) "load file successfully!"
+
     call get_natom(10,natom)
     rewind(10)
     allocate(atom(natom)) 
 
     call read_inp(10,natom,atom,chr,spinmul)
     nele=sum(atom%index)-chr
-    write(*,*) "The number of atoms:" ,natom
-    write(*,*) "The number of electrons:" ,nele
-    write(*,*) "The charge of molecule:" ,chr
-    if(spinmul==1)write(*,*)'Close Shell molecule'
-    if(spinmul>1)write(*,*)'Open Shell molecule'
+    write(15,*) "The number of atoms:" ,natom
+    write(15,*) "The number of electrons:" ,nele
+    write(15,*) "The charge of molecule:" ,chr
+    if(spinmul==1)write(15,*)'Close Shell molecule'
+    if(spinmul>1)write(15,*)'Open Shell molecule'
     close(10)
     
-    open(20,file="def2svp.gbs",status="old")
+    basispath="basis/"//"def2svp"//".gbs"
+    open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
-    write(*,*) 'nshl=',nshl
-    write(*,*) 'nprim=',nprim
+    write(15,*) 'nshl=',nshl
+    write(15,*) 'nprim=',nprim
     
     allocate(cntr_odr(nshl))
     allocate(angl(nshl))
@@ -69,7 +76,7 @@ program wQC
     
     call read_bas(20,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
-    write(*,*) "nbas=",nbas
+    write(15,*) "nbas=",nbas
     
     allocate(S(nbas,nbas))
     allocate(T(nbas,nbas))
@@ -87,11 +94,11 @@ program wQC
  !   end if
     
     call cal_nucp(atom,natom,nucp)
-    write(*,*) "nucp=",nucp
+    write(15,*) "nucp=",nucp
     allocate(C(nbas,nbas))
     allocate(D(nbas,nbas))
     allocate(E(nbas))
-    call RHF(nbas,nele,nucp,S,T,V,eri,D,E,C)
+    call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
     
     
     

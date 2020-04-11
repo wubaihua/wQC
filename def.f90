@@ -1,18 +1,34 @@
+! This file is a part of wQC(https://github.com/wubaihua/wQC)
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+! module def: some definition in wQC, including the typr of atom
+! and shell, degeneracy of shell in different type of GTO, etc. 
+
+! Some code in this file refers to the source code of Multiwfn 3.6
+! (http://sobereva.com/multiwfn/). Multiwfn is a quantum chemistry
+! wavefunction analysis program developed by Dr. Tian Lu. Author 
+! thanks for his contribution.
+
+
+
 module def
-    type atomtype !×Ô¶¨ÒåµÄ¼ÇÂ¼Ô­×ÓÐÅÏ¢µÄÀàÐÍ
-    character*2 name !Ô­×ÓÃû
-    integer index !Ô­×ÓÐòºÅ¡£µ±Ê¹ÓÃÁËØÍÊÆÊ±Ô­×ÓºËµçºÉ½«Ð¡ÓÚÔ­×ÓÐòºÅ
-    real*8 x,y,z,charge !Ô­×Ó×ø±ê(Bohr)¼°Ô­×ÓºËµçºÉ
+    type atomtype !ï¿½Ô¶ï¿½ï¿½ï¿½Ä¼ï¿½Â¼Ô­ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    character*2 name !Ô­ï¿½ï¿½ï¿½ï¿½
+    integer index !Ô­ï¿½ï¿½ï¿½ï¿½Å¡ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±Ô­ï¿½ÓºËµï¿½É½ï¿½Ð¡ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½
+    real*8 x,y,z,charge !Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(Bohr)ï¿½ï¿½Ô­ï¿½ÓºËµï¿½ï¿½
     end type
 
-    type primtype !×Ô¶¨ÒåµÄ¼ÇÂ¼GTFÐÅÏ¢µÄ×¨ÓÃÀàÐÍ
-    integer center,functype !GTFËùÊôÔ­×ÓÒÔ¼°GTFµÄÀàÐÍ
-    real*8,allocatable:: e(:)!Ö¸Êý
+    type primtype !ï¿½Ô¶ï¿½ï¿½ï¿½Ä¼ï¿½Â¼GTFï¿½ï¿½Ï¢ï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    integer center,functype !GTFï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½Ô¼ï¿½GTFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    real*8,allocatable:: e(:)!Ö¸ï¿½ï¿½
 
     real*8,allocatable::  C(:,:)
     end type
 
-character*2 :: name2ind(0:109)=(/ "Bq","H ","He", &   !Ô­×ÓÃûºÍÔ­×ÓÐòºÅµÄ×ª»»±í¡£0ºÅÊÇÐéÔ­×Ó
+character*2 :: name2ind(0:109)=(/ "Bq","H ","He", &   !Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Åµï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½
 "Li","Be","B ","C ","N ","O ","F ","Ne", & !3~10
 "Na","Mg","Al","Si","P ","S ","Cl","Ar", & !11~18
 "K ","Ca","Sc","Ti","V ","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga","Ge","As","Se","Br","Kr", & !19~36
@@ -25,18 +41,18 @@ character*2 :: name2ind(0:109)=(/ "Bq","H ","He", &   !Ô­×ÓÃûºÍÔ­×ÓÐòºÅµÄ×ª»»±í¡
 
 character*2 :: shellindex(1:6)=(/'S ','P ','SP','D','F','G'/)
 
-!ÏÂÃæÈýÐÐÊÇGTFÀàÐÍÓëGTFµÄx,y,zÉÏµÄÖ¸ÊýµÄ×ª»»±í¡£ÀýÈçXYÐÍGTFµÄx,y,zµÄÖ¸Êý·Ö±ðÊÇ1,1,0£¬ºÍÏÂÃæÈýÐÐµÄµÚ8ÁÐ¶ÔÓ¦£¬ËùÒÔÕâÑùµÄGTFµÄfunctypeÊÇ8¡£
+!ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GTFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GTFï¿½ï¿½x,y,zï¿½Ïµï¿½Ö¸ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XYï¿½ï¿½GTFï¿½ï¿½x,y,zï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½1,1,0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄµï¿½8ï¿½Ð¶ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GTFï¿½ï¿½functypeï¿½ï¿½8ï¿½ï¿½
 integer :: type2ix(35)=(/ 0,1,0,0, 2,0,0,1,1,0, 3,0,0,2,2,0,1,1,0,1, 0,0,0,0,0,1,1,1,1,2,2,2,3,3,4 /)
 integer :: type2iy(35)=(/ 0,0,1,0, 0,2,0,1,0,1, 0,3,0,1,0,2,2,0,1,1, 0,1,2,3,4,0,1,2,3,0,1,2,0,1,0 /)
 integer :: type2iz(35)=(/ 0,0,0,1, 0,0,2,0,1,1, 0,0,3,0,1,1,0,2,2,1, 4,3,2,1,0,3,2,1,0,2,1,0,1,0,0 /)
-integer :: nmo=0,nprims=0,ncenter=0 !¹ìµÀÊý¡¢GTFÊý¡¢Ô­×ÓÊý
-integer wfntype !0/1/2´ú±í²¨º¯ÊýÊÇR/U/ROHF²¨º¯Êý£¬3/4·Ö±ð´ú±í±Õ¿Ç²ãºÍ¿ª¿Ç²ãºóHF²¨º¯Êý
-real*8 :: nelec=0,naelec=0,nbelec=0 !×Üµç×ÓÊý¡¢alphaºÍbetaµç×ÓÊý
-type(atomtype),allocatable :: a(:) !¼ÇÂ¼Ô­×ÓÐÅÏ¢µÄÊý×é
-type(primtype),allocatable :: b(:) !¼ÇÂ¼GTFÐÅÏ¢µÄÊý×é
-real*8,allocatable :: MOocc(:),MOene(:) !¹ìµÀÕ¼¾ÝÊýºÍ¹ìµÀÄÜÁ¿
-integer,allocatable :: MOtype(:) !¼ÇÂ¼¹ìµÀÀàÐÍ¡£0/1/2·Ö±ð´ú±íÎÞ×ÔÐý/alpha/betaÐÍ¹ìµÀ
-!real*8,allocatable :: CO(:,:) !¹ìµÀÕ¹¿ªÏµÊý¾ØÕó¡£CO(i,j)´ú±íµÚj¸öGTFÔÚµÚiºÅ¹ìµÀÖÐµÄÕ¹¿ªÏµÊý£¬ÏµÊýÖÐÒÑ¾­°ÑÊÕËõÏµÊý¡¢¹éÒ»»¯ÏµÊýÈ«¶¼°üº¬½øÈ¥ÁË¡£
+integer :: nmo=0,nprims=0,ncenter=0 !ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GTFï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½
+integer wfntype !0/1/2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½R/U/ROHFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3/4ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿Ç²ï¿½Í¿ï¿½ï¿½Ç²ï¿½ï¿½HFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+real*8 :: nelec=0,naelec=0,nbelec=0 !ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½alphaï¿½ï¿½betaï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+type(atomtype),allocatable :: a(:) !ï¿½ï¿½Â¼Ô­ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+type(primtype),allocatable :: b(:) !ï¿½ï¿½Â¼GTFï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+real*8,allocatable :: MOocc(:),MOene(:) !ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+integer,allocatable :: MOtype(:) !ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½0/1/2ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/alpha/betaï¿½Í¹ï¿½ï¿½
+!real*8,allocatable :: CO(:,:) !ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CO(i,j)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½jï¿½ï¿½GTFï¿½Úµï¿½iï¿½Å¹ï¿½ï¿½ï¿½Ðµï¿½Õ¹ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ïµï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥ï¿½Ë¡ï¿½
 !index of shell : 0--S,  1--P,  2--D,  3--F     
 integer :: shl_degen_sph(0:3)=(/1,3,5,7/) !Degeneracy of shell in Spherical harmonic Gaussian function(5D,7F) 
 integer :: shl_degen_cart(0:3)=(/1,3,6,10/) !Degeneracy of shell in Cartesian Gaussian function(6D,10F) 
