@@ -26,12 +26,15 @@ program wQC
     real*8,allocatable :: expnt(:),coeff(:),geom(:,:)
     real*8,allocatable :: S(:,:),T(:,:),V(:,:),eri(:,:,:,:)
     real*8,allocatable :: C(:,:),D(:,:),E(:)
+    real*8,allocatable :: MLK_charge(:),LDW_charge(:)
     real*8 nucp
     
+    
+
     write(*,*)"Input the file path:"
     
     read*, filepath
-    !filepath="H2.txt     "
+    !filepath="H2O.inp     "
         
     
     open(10, file=trim(filepath), status='old')  
@@ -41,6 +44,7 @@ program wQC
     call cpu_time(t1)
 
     call out_init(15,filepath)
+
     write(15,*) "load file successfully!"
 
     call get_natom(10,natom)
@@ -101,6 +105,10 @@ program wQC
     allocate(D(nbas,nbas))
     allocate(E(nbas))
     call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
+
+    allocate(MLK_charge(natom))
+    allocate(LDW_charge(natom))
+    call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge,bond_order)
 
     call cpu_time(t2)
     write(15,*) "Job Time:",t2-t1,"Seconds"

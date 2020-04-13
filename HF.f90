@@ -38,6 +38,9 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
     logical conv
+
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "Restricted Hartree-Fock for closed-shell molecule:"
     
     call mat_power(nbas,S,-0.5_8,S_haf)
     H_core=T+V
@@ -230,3 +233,104 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
 
 
 end subroutine
+
+
+
+subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge,bond_order)
+    use def
+    use math
+    implicit real*8(a-h,o-z)
+    integer nbas,natom,nshl,idout
+    integer shl_belong_to_atom(nshl),angl(nshl)
+    real*8 D(nbas,nbas),S(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas)
+    real*8 MLK_charge(natom),LDW_charge(natom),bond_order(natom,natom)
+    real*8 S_haf(nbas,nbas),DS(nbas,nbas),SDS(nbas,nbas)
+    type(atomtype) :: atom(natom)
+    integer nbas_in_atom(natom)
+
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "Population Analysis"
+    write(idout,*)
+    !write(*,*) "test1"
+    D=D_alpha+D_beta
+
+    nbas_in_atom=0
+
+    do i=1,natom
+        do j=1,nshl
+            if(shl_belong_to_atom(j)==i)then
+                nbas_in_atom(i)=nbas_in_atom(i)+shl_degen_sph(angl(j))
+            end if
+        end do
+    end do
+
+    !write(*,*) nbas_in_atom
+
+    MLK_charge=real(atom(:)%charge)
+    LDW_charge=real(atom(:)%charge)
+
+    call mat_power(nbas,S,0.5_8,S_haf)
+    DS=matmul(D,S)
+    SDS=matmul(matmul(S_haf,D),S_haf)
+
+    ! rho=0
+    ! do i=1,nbas
+    !     rho=rho+SDS(i,i)
+    ! end do
+    ! write(*,*) "rho=",rho
+
+    ibas=1
+    do i=1,natom
+        do k=ibas,ibas+nbas_in_atom(i)-1
+            MLK_charge(i)=MLK_charge(i)-DS(k,k)
+            LDW_charge(i)=LDW_charge(i)-SDS(k,k)
+            !write(*,*) "MLK(",i,")=",LDW_charge(i)
+        end do
+        ibas=ibas+nbas_in_atom(i)
+    end do
+
+   ! write(*,*) "test4"
+    write(idout,"(a)") "The Atomic Charge Analysis:"
+    write(idout,*) "index_of_atom  notation_of_atom  Mulliken_Charge  Löwdin_Charge"
+    do i=1,natom
+        write(idout,*) i,atom(i)%name,MLK_charge(i),LDW_charge(i)
+    end do
+
+    ibas=1
+    bond_order=0
+    do i=1,natom
+        jbas=1
+        do j=1,natom
+            !if(j==i)cycle
+            do m=ibas,ibas+nbas_in_atom(i)-1
+                do n=jbas,jbas+nbas_in_atom(j)-1
+                    bond_order(i,j)=bond_order(i,j)+DS(m,n)*DS(n,m)
+                end do
+            end do
+            jbas=jbas+nbas_in_atom(j)
+        end do
+        ibas=ibas+nbas_in_atom(i)
+    end do
+
+    do i=1,natom
+        bond_order(i,i)=0
+    end do
+
+    write(idout,"(a)") "The Mayer Bond Order Analysis:"
+    write(idout,*) "  ",1,"--",natom
+    do i=1,natom
+        write(idout,*) i,bond_order(:,i)
+    end do
+    
+    
+    
+    
+    
+    
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+
+end subroutine
+
+
+

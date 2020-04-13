@@ -1,7 +1,7 @@
 # wQC
 A simple Fortran Quantum Chemistry Program
 
-
+Last-update: 2020-4-13
 
 Author: Baihua Wu (wubaihua@pku.edu.cn)
 
@@ -25,17 +25,19 @@ Just type `make`.
 
 ## Features currently implemented
 
-* Restricted Hartree-Fock
+* Restricted Hartree-Fock for closed-shell system
+* Population Analysis
 
 
 
 ## TODO
 
 * MP2
-* Population Analysis
+* Unrestricted HF
 * DFT
 * CCSD
 * CAS Method
+* TDHF and TDDFT
 
 
 
