@@ -33,8 +33,8 @@ program wQC
 
     write(*,*)"Input the file path:"
     
-    read*, filepath
-    !filepath="H2O.inp     "
+    !read*, filepath
+    filepath="H2O.inp     "
         
     
     open(10, file=trim(filepath), status='old')  
@@ -109,6 +109,8 @@ program wQC
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))
     call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge,bond_order)
+    write(*,*) "test-1"
+    call MP2(15,nbas,nele,E,C,eri,E_mp2)
 
     call cpu_time(t2)
     write(15,*) "Job Time:",t2-t1,"Seconds"
