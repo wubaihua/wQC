@@ -83,7 +83,8 @@ program wQC
     call read_bas(20,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
     write(15,*) "nbas=",nbas
-    
+    nbas2=nbas
+    nele2=nele
     allocate(S(nbas,nbas))
     allocate(T(nbas,nbas))
     allocate(V(nbas,nbas))
@@ -105,11 +106,14 @@ program wQC
     allocate(D(nbas,nbas))
     allocate(E(nbas))
     call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
-
+    
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))
+    write(*,*) "nbas=",nbas
     call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge,bond_order)
-    write(*,*) "test-1"
+    nbas=nbas2
+    nele=nele2
+    write(*,*) "nbas=",nbas
     call MP2(15,nbas,nele,E,C,eri,E_mp2)
 
     call cpu_time(t2)

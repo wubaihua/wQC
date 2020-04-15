@@ -240,7 +240,7 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
     use def
     use math
     implicit real*8(a-h,o-z)
-    integer nbas,natom,nshl,idout
+    integer,intent(in) :: nbas,natom,nshl,idout
     integer shl_belong_to_atom(nshl),angl(nshl)
     real*8 D(nbas,nbas),S(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas)
     real*8 MLK_charge(natom),LDW_charge(natom),bond_order(natom,natom)
@@ -268,11 +268,12 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
 
     MLK_charge=real(atom(:)%charge)
     LDW_charge=real(atom(:)%charge)
-
+    
     call mat_power(nbas,S,0.5_8,S_haf)
     DS=matmul(D,S)
     SDS=matmul(matmul(S_haf,D),S_haf)
-
+    write(*,*) "nbas1=",nbas
+    
     ! rho=0
     ! do i=1,nbas
     !     rho=rho+SDS(i,i)
@@ -295,7 +296,7 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
     do i=1,natom
         write(idout,*) i,atom(i)%name,MLK_charge(i),LDW_charge(i)
     end do
-
+    !write(*,*) "nbas2=",nbas
     ibas=1
     bond_order=0
     do i=1,natom
@@ -311,7 +312,7 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
         end do
         ibas=ibas+nbas_in_atom(i)
     end do
-
+    !write(*,*) "nbas3=",nbas
     do i=1,natom
         bond_order(i,i)=0
     end do
@@ -322,13 +323,14 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
         write(idout,*) i,bond_order(:,i)
     end do
     
-    
+    write(*,*) "nbas4=",nbas
     
     
     
     
     write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
+    write(*,*) "nbas5=",nbas
 
 end subroutine
 

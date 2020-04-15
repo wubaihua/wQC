@@ -17,16 +17,18 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     integer sigma,mu,lambda,nu
     integer p,q,r,s
     integer i,j,ia,ib
-    real(kind=8) E(nbas),C(nbas,nbas),eri(nbas,nbas,nbas,nbas)
-    real(kind=8) erimo(nbas,nbas,nbas,nbas),E_mp2
+    real(kind=8) :: E(nbas),C(nbas,nbas),eri(nbas,nbas,nbas,nbas),E_mp2
+    real(kind=8) :: erimo(nbas,nbas,nbas,nbas)
     real(kind=8) sum1,sum2,sum3
 
-    write(*,*) "test0"
+    write(*,*) "nbas=",nbas
 
-    sum1=0
-    sum2=0
-    sum3=0
-    erimo=0
+    
+
+    sum1=0.0
+    sum2=0.0
+    sum3=0.0
+    erimo=0.0
 
     write(*,*) "test1"
 
@@ -55,7 +57,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     end do
 
     write(*,*) "test2"
-
+    write(*,*) "nele=",nele
     E_mp2=0
     do i=1,nele/2
         do j=1,nele/2
