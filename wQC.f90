@@ -8,7 +8,7 @@
 ! This program is still unfinished. It may still have some bugs which
 ! can make wrong result. I will still develop and maintain this program. 
 
-! Last update: 2020-4-11
+! Last update: 2020-4-17
 
 ! This file is the main program part of wQC.
 
@@ -60,7 +60,7 @@ program wQC
     if(spinmul>1)write(15,*)'Open Shell molecule'
     close(10)
     
-    basispath="basis/"//"def2svp"//".gbs"
+    basispath="basis/"//"sto-3g"//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     write(15,*) 'nshl=',nshl
@@ -82,7 +82,7 @@ program wQC
     
     call read_bas(20,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
-    write(15,*) "nbas=",nbas
+    !write(15,*) "nbas=",nbas
     nbas2=nbas
     nele2=nele
     allocate(S(nbas,nbas))
@@ -92,6 +92,10 @@ program wQC
     
     call cal_eint(nbas,natom,nprim,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
     
+    ! write(*,*) "nbas1=",nbas
+    ! write(*,*) "nele1=",nele
+    ! write(*,*) "nshl1=",nshl
+    ! write(*,*) "natom1=",natom
 
 	!read(*,*) istep
 	!if(istep==1)then
@@ -109,11 +113,17 @@ program wQC
     
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))
-    write(*,*) "nbas=",nbas
-    call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge,bond_order)
-    nbas=nbas2
-    nele=nele2
-    write(*,*) "nbas=",nbas
+    ! write(*,*) "nbas=",nbas
+    ! write(*,*) "nele=",nele
+
+    call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge)
+    ! nbas=nbas2
+    ! nele=nele2
+    ! write(*,*) "nbas=",nbas
+    ! write(*,*) "nele=",nele
+    ! write(*,*) "nshl=",nshl
+    ! write(*,*) "natom=",natom
+
     call MP2(15,nbas,nele,E,C,eri,E_mp2)
 
     call cpu_time(t2)

@@ -4,7 +4,7 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
-! Last update: 2020-4-11
+! Last update: 2020-4-17
 
 ! PT: the part about many-Body perturbation theory(MBPT) method, including 
 ! Moller-Plesset 2-order perturbation(MP2).
@@ -21,8 +21,9 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     real(kind=8) :: erimo(nbas,nbas,nbas,nbas)
     real(kind=8) sum1,sum2,sum3
 
-    write(*,*) "nbas=",nbas
-
+    
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "Moller-Plesset 2-order perturbation(MP2) Method"
     
 
     sum1=0.0
@@ -30,7 +31,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     sum3=0.0
     erimo=0.0
 
-    write(*,*) "test1"
+   
 
     do p=1,nbas
         do q=1,nbas
@@ -56,8 +57,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
         end do
     end do
 
-    write(*,*) "test2"
-    write(*,*) "nele=",nele
+    
     E_mp2=0
     do i=1,nele/2
         do j=1,nele/2
@@ -69,11 +69,12 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
         end do
     end do
 
-    write(*,*) "test3"
+    
 
     write(idout,*) "MP2 correction energy (a.u.):"
     write(idout,*) "delta E(MP2)=",E_mp2
 
-
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+   
 
 end subroutine

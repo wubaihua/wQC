@@ -126,7 +126,7 @@ contains
         real*8  eri(nbas,nbas,nbas,nbas)
         real*8, dimension(:,:), allocatable :: buf1e
         real*8, dimension(:,:,:,:), allocatable :: buf2e
-        integer, dimension(4) :: shls
+        integer :: shls1(2),shls2(4)
         integer, external :: CINTcgto_spheric
         
         call set_libcint_input(natm,nprm,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom)
@@ -135,18 +135,18 @@ contains
     
     
         do i = 1, nshl
-            shls(1) = i - 1
+            shls1(1) = i - 1
             di = CINTcgto_spheric(i-1, bas)
             do j = 1, nshl
-                shls(2) = j - 1
+                shls1(2) = j - 1
                 dj = CINTcgto_spheric(j-1, bas)
                 allocate(buf1e(di,dj))
                 x = sh_indx(i); y = sh_indx(j)
-                call cint1e_ovlp_sph(buf1e,shls,atm,natm,bas,nshl,env)
+                call cint1e_ovlp_sph(buf1e,shls1,atm,natm,bas,nshl,env)
                 S(x:,y:) = buf1e(:,:)
-                call cint1e_kin_sph(buf1e,shls,atm,natm,bas,nshl,env)
+                call cint1e_kin_sph(buf1e,shls1,atm,natm,bas,nshl,env)
                 T(x:,y:) = buf1e(:,:)
-                call cint1e_nuc_sph(buf1e,shls,atm,natm,bas,nshl,env)
+                call cint1e_nuc_sph(buf1e,shls1,atm,natm,bas,nshl,env)
                 V(x:,y:) = buf1e(:,:)
                 deallocate(buf1e)
             end do
@@ -154,21 +154,21 @@ contains
         
         
         do i = 1, nshl
-            shls(1) = i - 1
+            shls2(1) = i - 1
             di = CINTcgto_spheric(i-1, bas)
             do j = 1, nshl
-                shls(2) = j - 1
+                shls2(2) = j - 1
                 dj = CINTcgto_spheric(j-1, bas)
                 do k = 1, nshl
-                    shls(3) = k - 1
+                    shls2(3) = k - 1
                     dk = CINTcgto_spheric(k-1, bas)
                     do l = 1, nshl
-                        shls(4) = l - 1
+                        shls2(4) = l - 1
                         dl = CINTcgto_spheric(l-1, bas)
                         allocate(buf2e(di,dj,dk,dl))
                         x = sh_indx(i); y = sh_indx(j)
                         z = sh_indx(k); w = sh_indx(l)
-                        call cint2e_sph(buf2e,shls,atm,natm,bas,nshl,env,0_8)
+                        call cint2e_sph(buf2e,shls2,atm,natm,bas,nshl,env,0_8)
                         eri(x:,y:,z:,w:) = buf2e(:,:,:,:)
                         deallocate(buf2e)
                     end do

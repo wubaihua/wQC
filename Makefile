@@ -1,7 +1,7 @@
 FC = ifort
 
 wqc:  constant.o math.o cint.o def.o geo.o HF.o PT.o fileio.o wQC.o
-	${FC} -o wqc *.f90 -mkl -lcint
+	${FC} -o wqc *.f90 -mkl -lcint  
 
 constant.o: constant.f90
 	${FC} -c constant.f90
@@ -34,7 +34,10 @@ geo.mod: geo.f90 geo.o def.mod math.o
 	${FC} -c geo.f90 -mkl #def.mod math.o -mkl
 
 HF.o: HF.f90 geo.mod math.mod def.mod
-	${FC} -c HF.f90 -mkl #geo.mod math.mod def.mod -mkl
+	${FC} -c HF.f90 -mkl #geo.mod math.mod def.mod -mkl 
+
+pop.o: pop.f90 def.mod math.o
+	${FC} -c pop.f90 -mkl
 
 PT.o: PT.f90
 	${FC} -c PT.f90
@@ -44,6 +47,11 @@ fileio.o: fileio.f90 def.mod
 
 wQC.o: wQC.f90 def.mod cint.mod
 	${FC} -c wQC.f90 #def.mod cint.mod
+
+
+
+clean: 
+	rm *.o *.mod wqc
 
 
 
