@@ -27,12 +27,12 @@ Just type `make`.
 
 * Restricted Hartree-Fock for closed-shell system
 * Population Analysis
+* MP2
 
 
 
 ## TODO
 
-* MP2
 * Unrestricted HF
 * DFT
 * CCSD

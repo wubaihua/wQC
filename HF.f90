@@ -4,7 +4,7 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
-! Last update: 2020-4-17
+! Last update: 2020-4-11
 
 !   HF: the part about Hartree-Fock method, including Restricted HF.
 
@@ -233,10 +233,6 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
 
 
 end subroutine
-
-
-
-
 
 
 

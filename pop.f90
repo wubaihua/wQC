@@ -18,7 +18,7 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
     integer,intent(in) :: shl_belong_to_atom(nshl),angl(nshl)
     real*8,intent(in) :: S(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas)
     real*8,intent(inout) :: MLK_charge(natom),LDW_charge(natom)
-    real*8 S_haf(nbas,nbas),DS(nbas,nbas),SDS(nbas,nbas),D(nbas,nbas)
+    real*8 S_haf(nbas,nbas),DS(nbas,nbas),SDS(nbas,nbas),D(nbas,nbas),rho
     type(atomtype),intent(in) :: atom(natom)
     integer nbas_in_atom(natom),i,j,k,m,n,ibas,jbas
 
@@ -51,7 +51,7 @@ subroutine pop_analy(idout,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_a
     
     ! rho=0
     ! do i=1,nbas
-    !     rho=rho+SDS(i,i)
+    !     rho=rho+DS(i,i)
     ! end do
     ! write(*,*) "rho=",rho
 
