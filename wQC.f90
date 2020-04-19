@@ -60,7 +60,7 @@ program wQC
     if(spinmul>1)write(15,*)'Open Shell molecule'
     close(10)
     
-    basispath="basis/"//"sto-3g"//".gbs"
+    basispath="basis/"//"def2svp"//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     write(15,*) 'nshl=',nshl
@@ -109,7 +109,8 @@ program wQC
     allocate(C(nbas,nbas))
     allocate(D(nbas,nbas))
     allocate(E(nbas))
-    call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
+    !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
+    call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,6)
     
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))
@@ -124,7 +125,7 @@ program wQC
     ! write(*,*) "nshl=",nshl
     ! write(*,*) "natom=",natom
 
-    call MP2(15,nbas,nele,E,C,eri,E_mp2)
+    !call MP2(15,nbas,nele,E,C,eri,E_mp2)
 
     call cpu_time(t2)
     write(15,*) "Job Time:",t2-t1,"Seconds"

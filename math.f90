@@ -191,6 +191,38 @@ subroutine exp_mat(n,A,eA)
 
 end subroutine
 
+!calcualte the dot product of two matrix A,B : x=A \cdot B
+subroutine mat_dot_prod(n,A,B,x)
+    implicit none
+    integer i,n,j
+    real*8,intent(in) :: A(n,n),B(n,n)
+    real*8,intent(inout) :: x
+    
+    x=0
+    do i=1,n
+        do j=1,n
+            x=x+A(i,j)*B(i,j)
+        end do
+    end do
+
+end subroutine
+
+
+!save the linear equation set :Ax=b
+subroutine solv_LES(n,A,x,b)
+    implicit none
+    integer n,ipiv(n),info
+    real*8,intent(in) :: A(n,n),b(n)
+    real*8 A1(n,n)
+    real*8,intent(inout) :: x(n)
+
+    A1=A
+    x=b
+
+    call dgesv( n, 1, A1, n, ipiv, x, n, info )
+
+end subroutine
+
 
 
 
