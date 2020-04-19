@@ -482,3 +482,244 @@ end subroutine
 
 
 
+subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
+    use math
+    implicit real*8(a-h,o-z)
+    integer nbas,nele_alpha,nele_beta,i,j,m,idout
+    real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
+    real*8 H_core(nbas,nbas),F_alpha(nbas,nbas),F_beta(nbas,nbas)
+    real*8 E_alpha(nbas),E_beta(nbas),C_alpha(nbas,nbas),C_beta(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas),D_tot(nbas,nbas)
+    real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas),Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
+    real*8 E_ele,E_tot,nucp,E_toti,E_elei
+    logical conv
+
+
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "Unrestricted Hartree-Fock for open-shell molecule:"
+    write(*,*) "nele_alpha1=",nele_alpha
+    call mat_power(nbas,S,-0.5_8,S_haf)
+    H_core=T+V
+    
+    Fock=matmul(matmul(transpose(S_haf),H_core),S_haf)
+    write(*,*) "nele_alpha2=",nele_alpha
+    ! write(idout,*) "Fock="
+    ! do i=1,nbas
+    !     write(idout,*) Fock(i,:)
+    ! end do
+
+    
+    call dia_symmat(nbas,Fock,E_alpha,C_alpha)
+    E_beta=E_alpha
+    C_beta=C_alpha
+    write(*,*) "nele_alpha3=",nele_alpha
+    ! ! write(idout,*) "C="
+    ! ! do i=1,nbas
+    ! !     write(idout,*) C(i,:)
+    ! ! end do
+
+    ! ! write(idout,*) "E="
+    ! ! do i=1,nbas
+    ! !     write(idout,*) E(i)
+    ! ! end do
+    write(*,*) "nbas=",nbas
+    write(*,*) "nele_alpha=",nele_alpha
+    D_alpha=0
+    do i=1,nbas
+        do j=1,nbas
+            do m=1,nele_alpha
+                D_alpha(i,j)=D_alpha(i,j)+C_alpha(i,m)*C_alpha(j,m)
+            end do
+        end do
+    end do
+
+    ! D_beta=0
+    ! do i=1,nbas
+    !     do j=1,nbas
+    !         do m=1,nele_beta
+    !             D_beta(i,j)=D_beta(i,j)+C_beta(i,m)*C_beta(j,m)
+    !         end do
+    !     end do
+    ! end do
+
+    ! D_tot=D_alpha+D_beta
+
+    ! ! write(idout,*) "D="
+    ! ! do i=1,nbas
+    ! !     write(idout,*) D(i,:)
+    ! ! end do
+    
+    ! E_ele=0
+    ! do i=1,nbas
+    !     do j=1,nbas
+    !         E_ele=E_ele+D_alpha(j,i)*(H_core(i,j)+F_alpha(i,j))+D_beta(j,i)*(H_core(i,j)+F_beta(i,j))
+    !     end do
+    ! end do
+    
+    ! E_tot=E_ele+nucp
+
+    ! ! write(idout,*) "E_ele=",E_ele
+    ! ! write(idout,*) "E_tot=",E_tot
+    
+    
+    ! icyc=1
+    ! conv=.false.
+    
+    ! do while(icyc<128)
+        
+    !     do i=1,nbas
+    !         do j=1,nbas 
+    !             F_alpha(i,j)=H_core(i,j)
+    !             F_beta(i,j)=H_core(i,j)
+    !             do k=1,nbas
+    !                 do l=1,nbas
+    !                  F_alpha(i,j)=F_alpha(i,j)+D_tot(l,k)*eri(i,j,k,l)-D_alpha(l,k)*eri(i,l,k,j)
+    !                  F_beta(i,j)=F_beta(i,j)+D_tot(l,k)*eri(i,j,k,l)-D_beta(l,k)*eri(i,l,k,j)
+    !                 end do
+    !             end do
+    !         end do
+    !     end do 
+
+    !     ! write(idout,*) "Fock="
+    !     ! do i=1,nbas
+    !     !     write(idout,*) Fock(i,:)
+    !     ! end do
+
+    !     Fock_orth_alpha=matmul(matmul(transpose(S_haf),F_alpha),S_haf)
+    !     Fock_orth_beta=matmul(matmul(transpose(S_haf),F_beta),S_haf)
+
+    !     ! write(*,*) "Fock="
+    !     ! do i=1,nbas
+    !     !     write(*,*) Fock(i,:)
+    !     ! end do
+        
+    !     call dia_symmat(nbas,Fock_orth_alpha,E_alpha,C_alpha)
+    !     call dia_symmat(nbas,Fock_orth_beta,E_beta,C_beta)
+        
+    !     C_alpha=matmul(S_haf,C_alpha)
+    !     C_beta=matmul(S_haf,C_beta)
+
+
+    !     Di_alpha=0
+    !     Di_beta=0
+    !     do i=1,nbas
+    !         do j=1,nbas
+    !             do m=1,nele_alpha
+    !                 Di_alpha(i,j)=Di_alpha(i,j)+C_alpha(i,m)*C_alpha(j,m)
+    !             end do
+    !             do m=1,nele_beta
+    !                 Di_beta(i,j)=Di_beta(i,j)+C_beta(i,m)*C_beta(j,m)
+    !             end do
+    !         end do
+    !     end do
+
+    !     Di_tot=Di_alpha+Di_beta
+
+    !     ! do i=1,nbas
+    !     !     do j=1,nbas
+    !     !         if(Di(i,j)<1E-10)then
+    !     !             Di(i,j)=0
+    !     !         end if
+    !     !     end do
+    !     ! end do
+
+    !     ! write(idout,*) "Di="
+    !     ! do i=1,nbas
+    !     !     write(idout,*) Di(i,:)
+    !     ! end do
+
+    
+    !     E_elei=0
+    !     do i=1,nbas
+    !         do j=1,nbas
+    !             E_elei=E_elei+Di_alpha(j,i)*(H_core(i,j)+F_alpha(i,j))+Di_beta(j,i)*(H_core(i,j)+F_beta(i,j))
+    !         end do
+    !     end do
+
+    !     ! E_elei=0
+    !     ! do i=1,nele/2
+            
+    !     !     E_elei=E_elei+H_core(i,i)+E(i)
+            
+    !     ! end do
+    
+    !     E_toti=E_elei+nucp
+
+        
+    !     deltaE=E_toti-E_tot
+        
+        
+    !     rmsd=0
+    !     do i=1,nbas
+    !         do j=1,nbas
+    !             rmsd=rmsd+(Di_tot(i,j)-D_tot(i,j))**2
+    !         end do
+    !     end do
+    !     rmsd=rmsd**0.5
+        
+    !     write(idout,"(a)") "//////////////////////////////////////////"
+    !     write(idout,*) "SCF step=",icyc
+    !     write(idout,*) "E_tot=",E_toti,"a.u."
+    !     write(idout,*) "delta_E=",deltaE,"a.u."
+    !     write(idout,*) "RMSD=",rmsd
+    !     write(idout,"(a)") "//////////////////////////////////////////"
+
+    !     E_tot=E_toti
+    !     E_ele=E_elei
+    !     D_tot=Di_tot
+        
+       
+        
+        
+    !     icyc=icyc+1
+        
+        
+    !     if(deltaE<1.0E-12 .and. rmsd<1.0E-12)then
+    !         conv=.true.
+    !         exit
+    !     end if
+
+    ! end do
+    
+    ! write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+    ! if(.not. conv)then
+    !     write(idout,*) "ERROR!!!!!!!!!!!!!!"
+    !     write(idout,*) "SCF fails to convergeat at",128,"step."
+    !     write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    !     return
+    ! end if
+
+    ! write(idout,*) "SCF convergence at",icyc-1,"step."
+    ! write(idout,*) "The Electronic Energy is"
+    ! write(idout,*) "E_ele=",E_ele,"a.u."
+    ! write(idout,*) 
+    ! write(idout,*) "The Total Energy is"
+    ! write(idout,*) "E_tot=",E_tot,"a.u."
+    ! write(idout,*) 
+    ! write(idout,*) "The UHF alpha orbital eigenvalues are (a.u.)"
+
+    ! do i=1,nbas
+    !     if(i<=nele_alpha)then
+    !         write(idout,*) "occ.",E_alpha(i)
+    !     else
+    !         write(idout,*) "virt.",E_alpha(i)
+    !     end if
+    ! end do
+
+    ! write(idout,*) "The UHF beta orbital eigenvalues are (a.u.)"
+
+    ! do i=1,nbas
+    !     if(i<=nele_beta)then
+    !         write(idout,*) "occ.",E_beta(i)
+    !     else
+    !         write(idout,*) "virt.",E_beta(i)
+    !     end if
+    ! end do
+
+    ! write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+
+end subroutine
+
+
+

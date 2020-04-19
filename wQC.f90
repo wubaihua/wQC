@@ -34,7 +34,7 @@ program wQC
     write(*,*)"Input the file path:"
     
     !read*, filepath
-    filepath="H2O.inp     "
+    filepath="methyl.inp     "
         
     
     open(10, file=trim(filepath), status='old')  
@@ -58,9 +58,13 @@ program wQC
     write(15,*) "The charge of molecule:" ,chr
     if(spinmul==1)write(15,*)'Close Shell molecule'
     if(spinmul>1)write(15,*)'Open Shell molecule'
+    nele_alpha=(nele-(spinmul-1))/2+(spinmul-1)
+    nele_beta=(nele-(spinmul-1))/2
+    write(15,*) "The number of Alpha electrons:",nele_alpha
+    write(15,*) "The number of Beta electrons:",nele_beta
     close(10)
     
-    basispath="basis/"//"def2svp"//".gbs"
+    basispath="basis/"//"sto-3g"//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     write(15,*) 'nshl=',nshl
@@ -83,8 +87,8 @@ program wQC
     call read_bas(20,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
     !write(15,*) "nbas=",nbas
-    nbas2=nbas
-    nele2=nele
+    ! nbas2=nbas
+    ! nele2=nele
     allocate(S(nbas,nbas))
     allocate(T(nbas,nbas))
     allocate(V(nbas,nbas))
@@ -109,15 +113,18 @@ program wQC
     allocate(C(nbas,nbas))
     allocate(D(nbas,nbas))
     allocate(E(nbas))
+    write(*,*) "nele_alpha=",nele_alpha
     !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
-    call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,6)
+    !call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,6)
+    call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
     
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))
     ! write(*,*) "nbas=",nbas
     ! write(*,*) "nele=",nele
 
-    call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge)
+    !call pop_analy(15,atom,nshl,nbas,natom,D,D,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge)
+    !call pop_analy(15,atom,nshl,nbas,natom,D_alpha,D_beta,S,shl_belong_to_atom,angl,MLK_charge,LDW_charge)
     ! nbas=nbas2
     ! nele=nele2
     ! write(*,*) "nbas=",nbas
