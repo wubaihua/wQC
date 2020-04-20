@@ -152,10 +152,10 @@ end subroutine
 subroutine dia_symmat(n,A,E,C)
     implicit none
     integer n,info
-    real*8 A(n,n),E(n),C(n,n),work(3*n)
+    real*8 A(n,n),E(n),C(n,n),work(3*n+1)
     
     C=A
-    call dsyev('V','L',n,C,n,E,work,3*n,info)
+    call dsyev('V','L',n,C,n,E,work,3*n+1,info)
 
 end subroutine
 

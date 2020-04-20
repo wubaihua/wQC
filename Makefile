@@ -1,7 +1,7 @@
 FC = ifort
 
 wqc:  constant.o math.o cint.o def.o geo.o HF.o PT.o fileio.o wQC.o
-	${FC} -o wqc *.f90 -mkl -lcint  
+	${FC} -o wqc *.f90 -mkl -lcint #-g -check all -fpe0 -warn -traceback -debug extended -check bound
 
 constant.o: constant.f90
 	${FC} -c constant.f90

@@ -27,6 +27,7 @@ program wQC
     real*8,allocatable :: S(:,:),T(:,:),V(:,:),eri(:,:,:,:)
     real*8,allocatable :: C(:,:),D(:,:),E(:)
     real*8,allocatable :: MLK_charge(:),LDW_charge(:)
+    real*8,allocatable :: D_alpha(:,:),D_beta(:,:),E_alpha(:),E_beta(:)
     real*8 nucp
     
     
@@ -35,6 +36,7 @@ program wQC
     
     !read*, filepath
     filepath="methyl.inp     "
+    !filepath="H2O.inp     "
         
     
     open(10, file=trim(filepath), status='old')  
@@ -113,7 +115,11 @@ program wQC
     allocate(C(nbas,nbas))
     allocate(D(nbas,nbas))
     allocate(E(nbas))
-    write(*,*) "nele_alpha=",nele_alpha
+    allocate(D_alpha(nbas,nbas))
+    allocate(E_alpha(nbas))
+    allocate(D_beta(nbas,nbas))
+    allocate(E_beta(nbas))
+    !write(*,*) "nele_alpha=",nele_alpha
     !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
     !call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,6)
     call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)

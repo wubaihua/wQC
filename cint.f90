@@ -53,7 +53,7 @@ contains
             atm(CHARGE_OF,iatom) = charge(iatom)
             atm(PTR_COORD,iatom) = off
             atm(NUC_MOD_OF,iatom) = 1
-            env(off+1:) = geom(:,iatom)
+            env(off+1:off+3) = geom(:,iatom)
             off = off + 3
         end do
   
@@ -143,11 +143,11 @@ contains
                 allocate(buf1e(di,dj))
                 x = sh_indx(i); y = sh_indx(j)
                 call cint1e_ovlp_sph(buf1e,shls1,atm,natm,bas,nshl,env)
-                S(x:,y:) = buf1e(:,:)
+                S(x:x+size(buf1e(:,1))-1,y:y+size(buf1e(1,:))-1) = buf1e(:,:)
                 call cint1e_kin_sph(buf1e,shls1,atm,natm,bas,nshl,env)
-                T(x:,y:) = buf1e(:,:)
+                T(x:x+size(buf1e(:,1))-1,y:y+size(buf1e(1,:))-1) = buf1e(:,:)
                 call cint1e_nuc_sph(buf1e,shls1,atm,natm,bas,nshl,env)
-                V(x:,y:) = buf1e(:,:)
+                V(x:x+size(buf1e(:,1))-1,y:y+size(buf1e(1,:))-1) = buf1e(:,:)
                 deallocate(buf1e)
             end do
         end do
@@ -169,7 +169,7 @@ contains
                         x = sh_indx(i); y = sh_indx(j)
                         z = sh_indx(k); w = sh_indx(l)
                         call cint2e_sph(buf2e,shls2,atm,natm,bas,nshl,env,0_8)
-                        eri(x:,y:,z:,w:) = buf2e(:,:,:,:)
+                        eri(x:x+di-1,y:y+dj-1,z:z+dk-1,w:w+dl-1) = buf2e(:,:,:,:)
                         deallocate(buf2e)
                     end do
                 end do
