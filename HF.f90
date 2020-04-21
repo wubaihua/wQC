@@ -4,11 +4,10 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
-! Last update: 2020-4-19
+! Last update: 2020-4-21
 
 !   HF: the part about Hartree-Fock method, including Restricted HF,
-! Restricted HF with DIIS speeding up.
-
+! Restricted HF with DIIS speeding up and Unrestricted HF.
 
 
 subroutine cal_nucp(atom,natom,nucp)
@@ -196,7 +195,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         icyc=icyc+1
         
         
-        if(deltaE<1.0E-12 .and. rmsd<1.0E-12)then
+        if(deltaE<1.0E-8 .and. rmsd<1.0E-8)then
             conv=.true.
             exit
         end if
@@ -440,7 +439,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
         icyc=icyc+1
         
         
-        if(deltaE<1.0E-12 .and. rmsd<1.0E-12)then
+        if(deltaE<1.0E-8 .and. rmsd<1.0E-8)then
             conv=.true.
             exit
         end if
@@ -489,7 +488,8 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
     real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
     real*8 H_core(nbas,nbas),F_alpha(nbas,nbas),F_beta(nbas,nbas),E(nbas),C(nbas,nbas)
     real*8 E_alpha(nbas),E_beta(nbas),C_alpha(nbas,nbas),C_beta(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas),D_tot(nbas,nbas)
-    real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas),Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
+    real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas)
+    real*8 Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei,work(4*nbas)
     logical conv
 
@@ -687,6 +687,8 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
         E_tot=E_toti
         E_ele=E_elei
         D_tot=Di_tot
+        D_alpha=Di_alpha
+        D_beta=Di_beta
         
        
         
@@ -694,7 +696,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
         icyc=icyc+1
         
         
-        if(deltaE<1.0E-12 .and. rmsd<1.0E-12)then
+        if(deltaE<1.0E-8 .and. rmsd<1.0E-8)then
             conv=.true.
             exit
         end if
