@@ -472,6 +472,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
         end if
     end do
 
+    
     write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 
@@ -490,7 +491,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
     real*8 E_alpha(nbas),E_beta(nbas),C_alpha(nbas,nbas),C_beta(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas),D_tot(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas)
     real*8 Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
-    real*8 E_ele,E_tot,nucp,E_toti,E_elei,work(4*nbas)
+    real*8 E_ele,E_tot,nucp,E_toti,E_elei,S_ab(nbas,nbas)
     logical conv
 
 
@@ -738,6 +739,22 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
             write(idout,*) "virt.",E_beta(i)
         end if
     end do
+
+    write(idout,*)
+    
+    write(idout,"(a)") "Spin Calculation:"
+    S_ab=matmul(matmul(transpose(C_alpha),S),C_beta)
+
+    spin_contamination=nele_beta
+    do i=1,nele_alpha
+        do j=1,nele_beta
+            spin_contamination=spin_contamination-(S_ab(i,j))**2
+        end do
+    end do
+    write(idout,*) "spin contamination=",spin_contamination
+    write(idout,*) "<S^2>=",spin_contamination+0.5*(nele_alpha-nele_beta)*(0.5*(nele_alpha-nele_beta)+1)
+
+
 
     write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
