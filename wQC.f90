@@ -35,8 +35,8 @@ program wQC
     write(*,*)"Input the file path:"
     
     !read*, filepath
-    filepath="methyl.inp     "
-    !filepath="H2O.inp     "
+    !filepath="methyl.inp     "
+    filepath="H2O.inp     "
         
     
     open(10, file=trim(filepath), status='old')  
@@ -66,7 +66,7 @@ program wQC
     write(15,*) "The number of Beta electrons:",nele_beta
     close(10)
     
-    basispath="basis/"//"sto-3g"//".gbs"
+    basispath="basis/"//"def2svp"//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     write(15,*) 'nshl=',nshl
@@ -121,8 +121,8 @@ program wQC
     allocate(E_beta(nbas))
     !write(*,*) "nele_alpha=",nele_alpha
     !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
-    !call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,6)
-    call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
+    call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,12)
+    !call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
     
     allocate(MLK_charge(natom))
     allocate(LDW_charge(natom))

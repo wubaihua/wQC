@@ -247,7 +247,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
     real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
     real*8 F_diis(ndiis,nbas,nbas),D_diis(ndiis,nbas,nbas),e_diis(ndiis,nbas,nbas)
-    real*8 mat_diis(ndiis+1,ndiis+1),alpha_diis(ndiis+1),b_diis(ndiis+1)
+    real*8 mat_diis(ndiis+1,ndiis+1),alpha_diis(ndiis+1),b_diis(ndiis+1)!,a(nbas,nbas)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
     logical conv
 
@@ -312,7 +312,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
     
     do while(icyc<128)
         
-        if(icyc<=6)then
+        if(icyc<=ndiis)then
         
             do i=1,nbas
                 do j=1,nbas 
@@ -342,7 +342,14 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
             b_diis(ndiis+1)=-1
             
             call solv_LES(ndiis+1,mat_diis,alpha_diis,b_diis)
-            
+
+            ! write(*,*) "sumalpha=:",sum(alpha_diis)
+            ! a=0
+            ! do i=1,ndiis
+            !     a=a+alpha_diis(i)*e_diis(i,:,:)
+            ! end do
+            ! write(*,*) "a=",a
+                
             Fock=0
             do i=1,ndiis
                 Fock=Fock+alpha_diis(i)*F_diis(i,:,:)
@@ -351,6 +358,8 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
             F_diis(1:ndiis-1,:,:)=F_diis(2:ndiis,:,:)
             F_diis(ndiis,:,:)=Fock
 
+            D_diis(1:ndiis-1,:,:)=D_diis(2:ndiis,:,:)
+            
 
         end if
 
@@ -432,6 +441,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
         E_tot=E_toti
         E_ele=E_elei
         D=Di
+        if(icyc>ndiis)D_diis(ndiis,:,:)=D
         
        
         
