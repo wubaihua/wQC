@@ -18,6 +18,7 @@ program wQC
     
     implicit real*8(a-h,o-z)
     character*200::filepath,string,basispath,outpath
+    character*20 basset
     character, allocatable :: filename(:)
     integer:: chr,spinmul
     type(atomtype) atom(:)
@@ -55,6 +56,7 @@ program wQC
     allocate(atom(natom)) 
     allocate(order(norder))
     call read_inp(10,natom,atom,chr,spinmul,norder,order)
+    !write(*,*) "order=",order
     nele=sum(atom%index)-chr
     write(15,*) "The number of atoms:" ,natom
     write(15,*) "The number of electrons:" ,nele
@@ -66,12 +68,16 @@ program wQC
     write(15,*) "The number of Alpha electrons:",nele_alpha
     write(15,*) "The number of Beta electrons:",nele_beta
     close(10)
+
+    call get_basset(15,norder,order,basset)
+
+    !write(*,*) "basset=",basset
     
-    basispath="basis/"//"def2svp"//".gbs"
+    basispath="basis/"//trim(adjustl(basset))//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
-    write(15,*) 'nshl=',nshl
-    write(15,*) 'nprim=',nprim
+    write(15,*) 'The number of shells=',nshl
+    write(15,*) 'The number of primitive Gaussian function=',nprim
     
     allocate(cntr_odr(nshl))
     allocate(angl(nshl))
@@ -143,8 +149,8 @@ program wQC
 
     call cpu_time(t2)
     write(15,*) "Job Time:",t2-t1,"Seconds"
-    write(15,"(a)") "End wQC"
-    
+    !write(15,"(a)") "End wQC"
+    call normal_end(15)
     
     
 

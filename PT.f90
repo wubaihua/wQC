@@ -22,7 +22,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     real(kind=8) sum1,sum2,sum3
 
     
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
     write(idout,"(a)") "Moller-Plesset 2-order perturbation(MP2) Method"
     
 
@@ -74,7 +74,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     write(idout,*) "MP2 correction energy (a.u.):"
     write(idout,*) "delta E(MP2)=",E_mp2
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
    
 
 end subroutine

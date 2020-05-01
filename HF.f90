@@ -40,7 +40,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
     logical conv
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
     write(idout,"(a)") "Restricted Hartree-Fock for closed-shell molecule:"
     
     call mat_power(nbas,S,-0.5_8,S_haf)
@@ -202,10 +202,10 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
 
     end do
     
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
     if(.not. conv)then
-        write(idout,*) "ERROR!!!!!!!!!!!!!!"
+        write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"step."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
@@ -228,7 +228,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         end if
     end do
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
 
 
@@ -251,7 +251,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
     real*8 E_ele,E_tot,nucp,E_toti,E_elei
     logical conv
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
     write(idout,"(a)") "Restricted Hartree-Fock for closed-shell molecule:"
     write(idout,"(a)") "DIIS method used"
     
@@ -456,10 +456,10 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
 
     end do
     
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
     if(.not. conv)then
-        write(idout,*) "ERROR!!!!!!!!!!!!!!"
+        write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"step."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
@@ -483,7 +483,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
     end do
 
     
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
 
 
@@ -505,7 +505,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
     logical conv
 
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
     write(idout,"(a)") "Unrestricted Hartree-Fock for open-shell molecule:"
     !write(*,*) "nele_alpha1=",nele_alpha
     S_haf=0
@@ -714,10 +714,10 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
 
     end do
     
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
     if(.not. conv)then
-        write(idout,*) "ERROR!!!!!!!!!!!!!!"
+        write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"step."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
@@ -766,7 +766,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
 
 
 
-    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") "---------------------------------------------------"
 
 
 end subroutine

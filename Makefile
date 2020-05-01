@@ -44,6 +44,9 @@ PT.o: PT.f90
 
 fileio.o: fileio.f90 def.mod
 	${FC} -c fileio.f90 #def.mod
+	
+order.o: order.f90
+	${FC} -c order.f90
 
 wQC.o: wQC.f90 def.mod cint.mod
 	${FC} -c wQC.f90 #def.mod cint.mod

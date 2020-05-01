@@ -37,7 +37,7 @@ subroutine get_ninp(idinp,idout,natom,norder)
         natom=natom+1
     end do
     
-    write(*,*) "natom=",natom
+    !write(*,*) "natom=",natom
 
 end subroutine
 
@@ -297,15 +297,54 @@ subroutine out_init(idout,filepath)
     implicit none
     integer idout
     character*200 filepath
+    character nowdate*20,nowtime*20
     
     write(idout,"(a)") "##########################################################################"
     write(idout,"(a)") "#  wQC: a simple fortran Quantum Chemistry/Electronic Structure Program  #"
     write(idout,"(a)") "#  Author:   Baihua Wu   (wubaihua@pku.edu.cn)                           #"    
     write(idout,"(a)") "##########################################################################"
     write(idout,*)
+    write(idout,*) "wQC starts at"
+    call date_and_time(nowdate,nowtime)
+    write(idout,"('Date: ',a,'-',a,'-',a,'   Time: ',a,':',a,':',a)") nowdate(1:4),nowdate(5:6),nowdate(7:8),nowtime(1:2),nowtime(3:4),nowtime(5:6)
+    write(idout,*)
     write(idout,"(a)") "wQC input file:"
     write(idout,"(a)") trim(filepath)
 
 
 
+end subroutine
+
+
+
+
+
+
+subroutine error_end(idout,massage)
+    implicit none
+    integer idout
+    character(len=*) massage
+    character nowdate*20,nowtime*20
+
+    write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+    write(idout,"(a)") massage
+    write(idout,"(a)") "wQC ERROR termination at"
+    call date_and_time(nowdate,nowtime)
+    write(idout,"('Date: ',a,'-',a,'-',a,'   Time: ',a,':',a,':',a)") nowdate(1:4),nowdate(5:6),nowdate(7:8),nowtime(1:2),nowtime(3:4),nowtime(5:6)
+    close(idout)
+    stop
+end subroutine
+
+
+subroutine normal_end(idout)
+    implicit none
+    integer idout
+    character nowdate*20,nowtime*20
+
+    write(idout,"(a)") "----------------------------------------"
+    write(idout,"(a)") "wQC NORMAL termination at"
+    call date_and_time(nowdate,nowtime)
+    write(idout,"('Date: ',a,'-',a,'-',a,'   Time: ',a,':',a,':',a)") nowdate(1:4),nowdate(5:6),nowdate(7:8),nowtime(1:2),nowtime(3:4),nowtime(5:6)
+    close(idout)
+    stop
 end subroutine
