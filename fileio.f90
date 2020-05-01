@@ -8,26 +8,60 @@
 
 
 
-subroutine get_natom(idinp,natom)
-    implicit none
-    integer idinp,natom,ierror
+subroutine get_ninp(idinp,idout,natom,norder)
+    implicit real*8(a-h,o-z)
+    integer idinp,natom,norder,ierror,ifound
+    character*200 c200
+
+    norder=0
     
+    do while(.true.)
+        read(idinp,*,iostat=ierror) c200
+        if(index(c200,"#")/=0)norder=norder+1
+        if(index(c200,"*")/=0)exit
+    end do
+
+   
+    if(ierrir/=0)then
+        write(idout,*) "Error: Molecule infomation not found!" 
+        return
+    end if
+    
+
     natom=0
     read(idinp,*)
     do while(.true.)
-        read(idinp,*,iostat=ierror)
-        if(ierror/=0)exit
+        read(idinp,*,iostat=ierror) c200
+       
+        if(c200(1:1)=="*")exit
         natom=natom+1
     end do
-      
+    
+    write(*,*) "natom=",natom
+
 end subroutine
 
 
-subroutine read_inp(idinp,natom,atom,chr,spinmul)
+subroutine read_inp(idinp,natom,atom,chr,spinmul,norder,order)
     use def
     implicit real*8(a-h,o-z)
     type(atomtype) atom(natom)
     integer:: chr,spinmul
+    character*20 order(norder)
+    character*200 c200
+
+    i=1
+    do while(.true.)
+        read(idinp,*,iostat=ierror) c200
+        if(index(c200,"#")/=0) then
+            backspace(idinp)
+            read(idinp,*) order(i)
+            order(i)(1:19)=order(i)(2:20)
+            i=i+1
+        end if
+        if(index(c200,"*")/=0)exit
+    end do
+
     
     read(idinp,*) chr, spinmul
     do i=1,natom

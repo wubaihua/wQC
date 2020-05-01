@@ -28,6 +28,7 @@ program wQC
     real*8,allocatable :: C(:,:),D(:,:),E(:)
     real*8,allocatable :: MLK_charge(:),LDW_charge(:)
     real*8,allocatable :: D_alpha(:,:),D_beta(:,:),E_alpha(:),E_beta(:)
+    character*20,allocatable :: order(:)
     real*8 nucp
     
     
@@ -49,11 +50,11 @@ program wQC
 
     write(15,*) "load file successfully!"
 
-    call get_natom(10,natom)
+    call get_ninp(10,15,natom,norder)
     rewind(10)
     allocate(atom(natom)) 
-
-    call read_inp(10,natom,atom,chr,spinmul)
+    allocate(order(norder))
+    call read_inp(10,natom,atom,chr,spinmul,norder,order)
     nele=sum(atom%index)-chr
     write(15,*) "The number of atoms:" ,natom
     write(15,*) "The number of electrons:" ,nele
