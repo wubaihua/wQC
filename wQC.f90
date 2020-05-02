@@ -76,8 +76,8 @@ program wQC
     basispath="basis/"//trim(adjustl(basset))//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
-    write(15,*) 'The number of shells=',nshl
-    write(15,*) 'The number of primitive Gaussian function=',nprim
+    ! write(15,*) 'The number of shells=',nshl
+    ! write(15,*) 'The number of primitive Gaussian function=',nprim
     
     allocate(cntr_odr(nshl))
     allocate(angl(nshl))
@@ -93,7 +93,7 @@ program wQC
     geom(3,:)=atom(:)%z
     charge=atom%charge
     
-    call read_bas(20,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
+    call read_bas(20,15,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
     !write(15,*) "nbas=",nbas
     ! nbas2=nbas

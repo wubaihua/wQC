@@ -134,10 +134,10 @@ subroutine get_bas_para(idbas,nshl,nprim,nbas,atom,natom)
 end subroutine
 
 
-subroutine read_bas(idbas,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
+subroutine read_bas(idbas,idout,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     use def
     implicit real*8(a-h,o-z)
-    integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom
+    integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom,idout
     integer cntr_odr(nshl),angl(nshl),shl_belong_to_atom(nshl),sh_indx(nshl)
     real*8 expnt(nprim),coeff(nprim)
     type(atomtype) :: atom(natom)
@@ -241,6 +241,9 @@ subroutine read_bas(idbas,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to
     do i=1,nshl
         nbas=nbas+shl_degen_sph(angl(i))
     end do
+
+    write(idout,*) 'The number of shells=',nshl
+    write(idout,*) 'The number of primitive Gaussian functions=',nprim
     
     
     !write(*,*) "cntr_odr=",cntr_odr

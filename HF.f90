@@ -206,12 +206,12 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
 
     if(.not. conv)then
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        write(idout,*) "SCF fails to convergeat at",128,"step."
+        write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
     end if
 
-    write(idout,*) "SCF convergence at",icyc-1,"step."
+    write(idout,*) "SCF convergence at",icyc-1,"steps."
     write(idout,*) "The Electronic Energy is"
     write(idout,*) "E_ele=",E_ele,"a.u."
     write(idout,*) 
@@ -460,12 +460,12 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
 
     if(.not. conv)then
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        write(idout,*) "SCF fails to convergeat at",128,"step."
+        write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
     end if
 
-    write(idout,*) "SCF convergence at",icyc-1,"step."
+    write(idout,*) "SCF convergence at",icyc-1,"steps."
     write(idout,*) "The Electronic Energy is"
     write(idout,*) "E_ele=",E_ele,"a.u."
     write(idout,*) 
@@ -718,12 +718,12 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
 
     if(.not. conv)then
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        write(idout,*) "SCF fails to convergeat at",128,"step."
+        write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return
     end if
 
-    write(idout,*) "SCF convergence at",icyc-1,"step."
+    write(idout,*) "SCF convergence at",icyc-1,"steps."
     write(idout,*) "The Electronic Energy is"
     write(idout,*) "E_ele=",E_ele,"a.u."
     write(idout,*) 
