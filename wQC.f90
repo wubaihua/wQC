@@ -15,22 +15,23 @@
 program wQC
     use def
     use cint
+    use init
     
     implicit real*8(a-h,o-z)
-    character*200::filepath,string,basispath,outpath
-    character*20 basset
-    character, allocatable :: filename(:)
-    integer:: chr,spinmul
-    type(atomtype) atom(:)
-    allocatable atom
-    integer,allocatable :: cntr_odr(:),angl(:),shl_belong_to_atom(:),sh_indx(:),charge(:)
-    real*8,allocatable :: expnt(:),coeff(:),geom(:,:)
-    real*8,allocatable :: S(:,:),T(:,:),V(:,:),eri(:,:,:,:)
-    real*8,allocatable :: C(:,:),D(:,:),E(:)
-    real*8,allocatable :: MLK_charge(:),LDW_charge(:)
-    real*8,allocatable :: D_alpha(:,:),D_beta(:,:),E_alpha(:),E_beta(:)
-    character*20,allocatable :: order(:)
-    real*8 nucp
+    ! character*200::filepath,string,basispath,outpath
+    ! character*20 basset
+    ! character, allocatable :: filename(:)
+    ! integer:: chr,spinmul
+    ! type(atomtype) atom(:)
+    ! allocatable atom
+    ! integer,allocatable :: cntr_odr(:),angl(:),shl_belong_to_atom(:),sh_indx(:),charge(:)
+    ! real*8,allocatable :: expnt(:),coeff(:),geom(:,:)
+    ! real*8,allocatable :: S(:,:),T(:,:),V(:,:),eri(:,:,:,:)
+    ! real*8,allocatable :: C(:,:),D(:,:),E(:)
+    ! real*8,allocatable :: MLK_charge(:),LDW_charge(:)
+    ! real*8,allocatable :: D_alpha(:,:),D_beta(:,:),E_alpha(:),E_beta(:)
+    ! character*20,allocatable :: order(:)
+    ! real*8 nucp
     
     
 
@@ -53,8 +54,9 @@ program wQC
 
     call get_ninp(10,15,natom,norder)
     rewind(10)
-    allocate(atom(natom)) 
-    allocate(order(norder))
+    ! allocate(atom(natom)) 
+    ! allocate(order(norder))
+    call init_atom()
     call read_inp(10,natom,atom,chr,spinmul,norder,order)
     !write(*,*) "order=",order
     nele=sum(atom%index)-chr
@@ -79,32 +81,36 @@ program wQC
     ! write(15,*) 'The number of shells=',nshl
     ! write(15,*) 'The number of primitive Gaussian function=',nprim
     
-    allocate(cntr_odr(nshl))
-    allocate(angl(nshl))
-    allocate(shl_belong_to_atom(nshl))
-    allocate(sh_indx(nshl))
-    allocate(expnt(nprim))
-    allocate(coeff(nprim))
-    allocate(geom(3,natom))
-    allocate(charge(natom))
+    call init_bas()
+    ! allocate(cntr_odr(nshl))
+    ! allocate(angl(nshl))
+    ! allocate(shl_belong_to_atom(nshl))
+    ! allocate(sh_indx(nshl))
+    ! allocate(expnt(nprim))
+    ! allocate(coeff(nprim))
+    ! allocate(geom(3,natom))
+    ! allocate(charge(natom))
     
-    geom(1,:)=atom(:)%x
-    geom(2,:)=atom(:)%y
-    geom(3,:)=atom(:)%z
-    charge=atom%charge
+    ! geom(1,:)=atom(:)%x
+    ! geom(2,:)=atom(:)%y
+    ! geom(3,:)=atom(:)%z
+    ! charge=atom%charge
     
     call read_bas(20,15,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
     !write(15,*) "nbas=",nbas
     ! nbas2=nbas
     ! nele2=nele
-    allocate(S(nbas,nbas))
-    allocate(T(nbas,nbas))
-    allocate(V(nbas,nbas))
-    allocate(eri(nbas,nbas,nbas,nbas))
+    call init_HF()
+    !write(*,*) "test1"
+    ! allocate(S(nbas,nbas))
+    ! allocate(T(nbas,nbas))
+    ! allocate(V(nbas,nbas))
+    ! allocate(eri(nbas,nbas,nbas,nbas))
+
     
     call cal_eint(nbas,natom,nprim,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
-    
+
     ! write(*,*) "nbas1=",nbas
     ! write(*,*) "nele1=",nele
     ! write(*,*) "nshl1=",nshl
@@ -117,22 +123,22 @@ program wQC
  !       write(*,*) 'wrong'
  !   end if
     
-    call cal_nucp(atom,natom,nucp)
-    write(15,*) "nucp=",nucp
-    allocate(C(nbas,nbas))
-    allocate(D(nbas,nbas))
-    allocate(E(nbas))
-    allocate(D_alpha(nbas,nbas))
-    allocate(E_alpha(nbas))
-    allocate(D_beta(nbas,nbas))
-    allocate(E_beta(nbas))
+    call cal_nucp(15,atom,natom,nucp)
+    !write(15,*) "nucp=",nucp
+    ! allocate(C(nbas,nbas))
+    ! allocate(D(nbas,nbas))
+    ! allocate(E(nbas))
+    ! allocate(D_alpha(nbas,nbas))
+    ! allocate(E_alpha(nbas))
+    ! allocate(D_beta(nbas,nbas))
+    ! allocate(E_beta(nbas))
     !write(*,*) "nele_alpha=",nele_alpha
     !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
     call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,12)
     !call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
     
-    allocate(MLK_charge(natom))
-    allocate(LDW_charge(natom))
+    ! allocate(MLK_charge(natom))
+    ! allocate(LDW_charge(natom))
     ! write(*,*) "nbas=",nbas
     ! write(*,*) "nele=",nele
 

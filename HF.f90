@@ -10,15 +10,17 @@
 ! Restricted HF with DIIS speeding up and Unrestricted HF.
 
 
-subroutine cal_nucp(atom,natom,nucp)
+subroutine cal_nucp(idout,atom,natom,nucp)
     use def
     !use math
     use geo
     implicit none
-    integer natom,i,j
+    integer natom,i,j,idout
     type(atomtype) :: atom(natom)
     real*8 nucp,d
     
+    write(idout,"(a)") "---------------------------------------------------"
+
     nucp=0
     do i=2,natom
         do j=1,i-1
@@ -27,6 +29,8 @@ subroutine cal_nucp(atom,natom,nucp)
         end do
     end do
     
+    write(idout,*) "nuclear repulsion energy(a.u.)=",nucp
+
 end subroutine
 
     
@@ -253,7 +257,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
 
     write(idout,"(a)") "---------------------------------------------------"
     write(idout,"(a)") "Restricted Hartree-Fock for closed-shell molecule:"
-    write(idout,"(a)") "DIIS method used"
+    write(idout,*) "DIIS Optimizer used, size of DIIS space=",ndiis
     
     call mat_power(nbas,S,-0.5_8,S_haf)
     H_core=T+V
