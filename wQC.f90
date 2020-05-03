@@ -34,12 +34,17 @@ program wQC
     ! real*8 nucp
     
     
+    call getarg(1,filepath)
+    !call getcwd(workpath)
+    call getenv("g16", workpath )
+    write(*,*) workpath
+    stop
 
-    write(*,*)"Input the file path:"
+    !write(*,*)"Input the file path:"
     
     !read*, filepath
     !filepath="methyl.inp     "
-    filepath="H2O.inp     "
+    !filepath="H2O.inp     "
     !filepath="test.inp     "  
     
     open(10, file=trim(filepath), status='old')  
@@ -76,7 +81,7 @@ program wQC
 
     !write(*,*) "basset=",basset
     
-    basispath="basis/"//trim(adjustl(basset))//".gbs"
+    basispath=workpath//"/basis/"//trim(adjustl(basset))//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     ! write(15,*) 'The number of shells=',nshl

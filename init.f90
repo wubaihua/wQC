@@ -13,6 +13,7 @@ module init
     use def
 
     character*200 filepath !input file load
+    character*200 workpath !wQC load 
     character*200 string
     character*200 basispath !basis-set file load
     character*200 outpath !output file load
