@@ -4,7 +4,9 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
-! module def: some definition in wQC, including the typr of atom
+! Last update: 2020-5-3
+
+! module def: some definition in wQC, including the type of atom
 ! and shell, degeneracy of shell in different type of GTO, etc. 
 
 ! Some code in this file refers to the source code of Multiwfn 3.6

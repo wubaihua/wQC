@@ -4,6 +4,8 @@
 ! > Baihua Wu
 ! > wubaihua@pku.edu.cn
 
+! Last update: 2020-5-3
+
 ! filoio: the file input/output part of wQC. 
 
 
@@ -42,7 +44,7 @@ subroutine get_ninp(idinp,idout,natom,norder)
 end subroutine
 
 
-subroutine read_inp(idinp,natom,atom,chr,spinmul,norder,order)
+subroutine read_inp(idinp,idout,natom,atom,chr,spinmul,norder,order)
     use def
     implicit real*8(a-h,o-z)
     type(atomtype) atom(natom)
@@ -74,10 +76,41 @@ subroutine read_inp(idinp,natom,atom,chr,spinmul,norder,order)
             end if
         end do
     end do
-    
+
+    write(idout,"(a)") "---------------------------------------------------"
+    write(idout,"(a)") "input information" 
+    do i=1,norder
+        write(idout,*) "#",order(i)
+    end do
+    write(idout,*)
+    write(idout,"(I1,1X,I1)") chr, spinmul
+    do i=1,natom
+        write(idout,"(A2,1X,3F14.8)") atom(i)%name,atom(i)%x,atom(i)%y,atom(i)%z
+    end do
+    write(idout,"(a)") "---------------------------------------------------"
 
 
 end subroutine
+
+subroutine write_inp(idinp,idout,atom)
+    use def
+    use init,only: natom,nele,chr,spinmul,nele_alpha,nele_beta
+    integer idinp,idout
+    type(atomtype) :: atom(natom)
+    nele=sum(atom%index)-chr
+    write(idout,*) "The number of atoms:" ,natom
+    write(idout,*) "The number of electrons:" ,nele
+    write(idout,*) "The charge of molecule:" ,chr
+    if(spinmul==1)write(idout,*)'Close Shell molecule'
+    if(spinmul>1)write(idout,*)'Open Shell molecule'
+    nele_alpha=(nele-(spinmul-1))/2+(spinmul-1)
+    nele_beta=(nele-(spinmul-1))/2
+    write(idout,*) "The number of Alpha electrons:",nele_alpha
+    write(idout,*) "The number of Beta electrons:",nele_beta
+    close(idinp)
+
+end subroutine
+
     
 
 

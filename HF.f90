@@ -212,7 +212,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        return
+        call error_end(idout,"SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."
@@ -466,7 +466,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        return
+        call error_end(idout,"SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."
@@ -724,7 +724,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        return
+        call error_end(idout,"SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."

@@ -40,7 +40,7 @@ program wQC
     !read*, filepath
     !filepath="methyl.inp     "
     filepath="H2O.inp     "
-        
+    !filepath="test.inp     "  
     
     open(10, file=trim(filepath), status='old')  
 
@@ -57,19 +57,20 @@ program wQC
     ! allocate(atom(natom)) 
     ! allocate(order(norder))
     call init_atom()
-    call read_inp(10,natom,atom,chr,spinmul,norder,order)
+    call read_inp(10,15,natom,atom,chr,spinmul,norder,order)
     !write(*,*) "order=",order
-    nele=sum(atom%index)-chr
-    write(15,*) "The number of atoms:" ,natom
-    write(15,*) "The number of electrons:" ,nele
-    write(15,*) "The charge of molecule:" ,chr
-    if(spinmul==1)write(15,*)'Close Shell molecule'
-    if(spinmul>1)write(15,*)'Open Shell molecule'
-    nele_alpha=(nele-(spinmul-1))/2+(spinmul-1)
-    nele_beta=(nele-(spinmul-1))/2
-    write(15,*) "The number of Alpha electrons:",nele_alpha
-    write(15,*) "The number of Beta electrons:",nele_beta
-    close(10)
+    call write_inp(10,15,atom)
+    ! nele=sum(atom%index)-chr
+    ! write(15,*) "The number of atoms:" ,natom
+    ! write(15,*) "The number of electrons:" ,nele
+    ! write(15,*) "The charge of molecule:" ,chr
+    ! if(spinmul==1)write(15,*)'Close Shell molecule'
+    ! if(spinmul>1)write(15,*)'Open Shell molecule'
+    ! nele_alpha=(nele-(spinmul-1))/2+(spinmul-1)
+    ! nele_beta=(nele-(spinmul-1))/2
+    ! write(15,*) "The number of Alpha electrons:",nele_alpha
+    ! write(15,*) "The number of Beta electrons:",nele_beta
+    ! close(10)
 
     call get_basset(15,norder,order,basset)
 
@@ -133,8 +134,8 @@ program wQC
     ! allocate(D_beta(nbas,nbas))
     ! allocate(E_beta(nbas))
     !write(*,*) "nele_alpha=",nele_alpha
-    !call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
-    call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,12)
+    call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
+    !call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,12)
     !call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
     
     ! allocate(MLK_charge(natom))

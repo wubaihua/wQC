@@ -1,3 +1,14 @@
+! This file is a part of wQC(https://github.com/wubaihua/wQC)
+
+! Author:
+! > Baihua Wu
+! > wubaihua@pku.edu.cn
+
+! Last update: 2020-5-3
+
+! module init: initialization wQC. The arrays in wQC are defined here. 
+
+
 module init
     use def
 
@@ -11,6 +22,9 @@ module init
     integer spinmul !molecular spin multiplicity
     type(atomtype),allocatable :: atom(:) !atom information
     integer natom !number of atoms
+    integer nele,& !total number of electrons
+            nele_alpha,& !number of alpha electrons
+            nele_beta !number of beta electrons
 
     integer nshl !number of shells
     integer nprim !number of primitive Gaussian functions
