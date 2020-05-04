@@ -3,6 +3,7 @@
 
 
 subroutine get_basset(idout,norder,order,basset)
+    use init, only: workpath
     implicit none
     integer i,idout,norder
     character*20,intent(in) :: order(norder)
@@ -11,7 +12,7 @@ subroutine get_basset(idout,norder,order,basset)
 
     write(idout,"(a)") "---------------------------------------------------"
     do i=1,norder
-        inquire(file='basis/'//trim(adjustl(order(i)))//'.gbs',exist=ifbas)
+        inquire(file=trim(adjustl(workpath))//'basis/'//trim(adjustl(order(i)))//'.gbs',exist=ifbas)
         !write(*,*) 'basis/'//trim(adjustl(order(i)))//'.gbs',ifbas
         if(ifbas)then
             basset=order(i)

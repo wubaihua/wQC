@@ -20,7 +20,7 @@ subroutine get_ninp(idinp,idout,natom,norder)
     do while(.true.)
         read(idinp,*,iostat=ierror) c200
         if(index(c200,"#")/=0)norder=norder+1
-        if(index(c200,"*")/=0)exit
+        if(index(c200,"*")==1)exit
     end do
 
    
@@ -61,7 +61,7 @@ subroutine read_inp(idinp,idout,natom,atom,chr,spinmul,norder,order)
             order(i)(1:19)=order(i)(2:20)
             i=i+1
         end if
-        if(index(c200,"*")/=0)exit
+        if(index(c200,"*")==1)exit
     end do
 
     

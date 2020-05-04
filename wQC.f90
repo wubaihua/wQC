@@ -33,12 +33,22 @@ program wQC
     ! character*20,allocatable :: order(:)
     ! real*8 nucp
     
-    
+    call getarg(0,workpath)
+    workpath=workpath(1:len(trim(adjustl(workpath)))-3)
     call getarg(1,filepath)
+    
     !call getcwd(workpath)
-    call getenv("g16", workpath )
-    write(*,*) workpath
-    stop
+    !call getenv("wqc", workpath )
+    ! i=system("which wqc")
+    ! write(*,*) i
+    ! stop
+    ! open(71,file="path.dat")
+    ! read(71,*)
+    ! read(71,*) workpath
+
+    
+    !write(*,*) workpath
+    !stop
 
     !write(*,*)"Input the file path:"
     
@@ -81,7 +91,7 @@ program wQC
 
     !write(*,*) "basset=",basset
     
-    basispath=workpath//"/basis/"//trim(adjustl(basset))//".gbs"
+    basispath=trim(adjustl(workpath))//"basis/"//trim(adjustl(basset))//".gbs"
     open(20,file=basispath,status="old")
     call get_bas_para(20,nshl,nprim,nbas,atom,natom)
     ! write(15,*) 'The number of shells=',nshl
