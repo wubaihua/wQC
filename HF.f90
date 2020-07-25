@@ -10,22 +10,23 @@
 ! Restricted HF with DIIS speeding up and Unrestricted HF.
 
 
-subroutine cal_nucp(idout,atom,natom,nucp)
+subroutine cal_nucp!(idout)!,atom,natom,nucp)
     use def
     !use math
     use geo
+    use init
     implicit none
-    integer natom,i,j,idout
-    type(atomtype) :: atom(natom)
-    real*8 nucp,d
+    integer i,j!,idout
+    !type(atomtype) :: atom(natom)
+    real*8 d1
     
     write(idout,"(a)") "---------------------------------------------------"
 
     nucp=0
     do i=2,natom
         do j=1,i-1
-            call geo_distance(atom,i,j,d)
-            nucp=nucp+real(atom(i)%charge*atom(j)%charge)/d
+            call geo_distance(atom,i,j,d1)
+            nucp=nucp+real(atom(i)%charge*atom(j)%charge)/d1
         end do
     end do
     
@@ -34,14 +35,20 @@ subroutine cal_nucp(idout,atom,natom,nucp)
 end subroutine
 
     
-subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
+subroutine RHF!(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
+    use init
     use math
-    implicit real*8(a-h,o-z)
-    integer nbas,nele,i,j,m,idout
-    real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
-    real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
+    ! implicit real*8(a-h,o-z)
+    ! integer nbas,nele,i,j,m,idout
+    ! real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
+    ! real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
+    ! real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
+    ! real*8 E_ele,E_tot,nucp,E_toti,E_elei
+
+    integer i,j,m
+    real*8 H_core(nbas,nbas),Di(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
-    real*8 E_ele,E_tot,nucp,E_toti,E_elei
+    real*8 E_toti,E_elei
     logical conv
 
     write(idout,"(a)") "---------------------------------------------------"
@@ -212,7 +219,7 @@ subroutine RHF(idout,nbas,nele,nucp,S,T,V,eri,D,E,C)
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        call error_end(idout,"SCF ERROR")
+        call error_end("SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."
@@ -243,16 +250,24 @@ end subroutine
 
 
 
-subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
+subroutine RHF_DIIS!(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
+    use init
     use math
     implicit real*8(a-h,o-z)
-    integer nbas,nele,i,j,m,idout,ndiis
-    real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
-    real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
+    ! integer nbas,nele,i,j,m,idout,ndiis
+    ! real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
+    ! real*8 H_core(nbas,nbas),E(nbas),C(nbas,nbas),D(nbas,nbas),Di(nbas,nbas)
+    ! real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
+    ! real*8 F_diis(ndiis,nbas,nbas),D_diis(ndiis,nbas,nbas),e_diis(ndiis,nbas,nbas)
+    ! real*8 mat_diis(ndiis+1,ndiis+1),alpha_diis(ndiis+1),b_diis(ndiis+1)!,a(nbas,nbas)
+    ! real*8 E_ele,E_tot,nucp,E_toti,E_elei
+
+    integer i,j,m!,ndiis
+    real*8 H_core(nbas,nbas),Di(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth(nbas,nbas)
     real*8 F_diis(ndiis,nbas,nbas),D_diis(ndiis,nbas,nbas),e_diis(ndiis,nbas,nbas)
     real*8 mat_diis(ndiis+1,ndiis+1),alpha_diis(ndiis+1),b_diis(ndiis+1)!,a(nbas,nbas)
-    real*8 E_ele,E_tot,nucp,E_toti,E_elei
+    real*8 E_toti,E_elei
     logical conv
 
     write(idout,"(a)") "---------------------------------------------------"
@@ -466,7 +481,7 @@ subroutine RHF_DIIS(idout,nbas,nele,nucp,S,T,V,eri,D,E,C,ndiis)
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        call error_end(idout,"SCF ERROR")
+        call error_end("SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."
@@ -496,16 +511,25 @@ end subroutine
 
 
 
-subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
+subroutine UHF!(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
+    use init
     use math
     implicit real*8(a-h,o-z)
-    integer nbas,nele_alpha,nele_beta,i,j,m,idout,info
-    real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
-    real*8 H_core(nbas,nbas),F_alpha(nbas,nbas),F_beta(nbas,nbas),E(nbas),C(nbas,nbas)
-    real*8 E_alpha(nbas),E_beta(nbas),C_alpha(nbas,nbas),C_beta(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas),D_tot(nbas,nbas)
+    ! integer nbas,nele_alpha,nele_beta,i,j,m,idout,info
+    ! real*8 S(nbas,nbas),T(nbas,nbas),V(nbas,nbas),eri(nbas,nbas,nbas,nbas)
+    ! real*8 H_core(nbas,nbas),F_alpha(nbas,nbas),F_beta(nbas,nbas),E(nbas),C(nbas,nbas)
+    ! real*8 E_alpha(nbas),E_beta(nbas),C_alpha(nbas,nbas),C_beta(nbas,nbas),D_alpha(nbas,nbas),D_beta(nbas,nbas),D_tot(nbas,nbas)
+    ! real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas)
+    ! real*8 Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
+    ! real*8 E_ele,E_tot,nucp,E_toti,E_elei,S_ab(nbas,nbas)
+
+    integer i,j,m,info
+    
+    real*8 H_core(nbas,nbas),F_alpha(nbas,nbas),F_beta(nbas,nbas)
+    real*8 C_alpha(nbas,nbas),C_beta(nbas,nbas),D_tot(nbas,nbas)
     real*8 S_haf(nbas,nbas),Fock(nbas,nbas),Fock_orth_alpha(nbas,nbas),Fock_orth_beta(nbas,nbas)
     real*8 Di_alpha(nbas,nbas),Di_beta(nbas,nbas),Di_tot(nbas,nbas)
-    real*8 E_ele,E_tot,nucp,E_toti,E_elei,S_ab(nbas,nbas)
+    real*8 E_toti,E_elei,S_ab(nbas,nbas)
     logical conv
 
 
@@ -724,7 +748,7 @@ subroutine UHF(idout,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_a
         write(idout,*) "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         write(idout,*) "SCF fails to convergeat at",128,"steps."
         write(idout,"(a)") "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        call error_end(idout,"SCF ERROR")
+        call error_end("SCF ERROR")
     end if
 
     write(idout,*) "SCF convergence at",icyc-1,"steps."

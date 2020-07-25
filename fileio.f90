@@ -10,9 +10,11 @@
 
 
 
-subroutine get_ninp(idinp,idout,natom,norder)
+subroutine get_ninp!(idinp,idout,natom,norder)
+    use init
     implicit real*8(a-h,o-z)
-    integer idinp,natom,norder,ierror,ifound
+    !integer idinp,natom,norder,ierror,ifound
+    integer ierror,ifound
     character*200 c200
 
     norder=0
@@ -44,12 +46,13 @@ subroutine get_ninp(idinp,idout,natom,norder)
 end subroutine
 
 
-subroutine read_inp(idinp,idout,natom,atom,chr,spinmul,norder,order)
+subroutine read_inp!(idinp,idout,natom,atom,chr,spinmul,norder,order)
+    use init
     use def
     implicit real*8(a-h,o-z)
-    type(atomtype) atom(natom)
-    integer:: chr,spinmul
-    character*20 order(norder)
+    ! type(atomtype) atom(natom)
+    ! integer:: chr,spinmul
+    ! character*20 order(norder)
     character*200 c200
 
     i=1
@@ -92,11 +95,12 @@ subroutine read_inp(idinp,idout,natom,atom,chr,spinmul,norder,order)
 
 end subroutine
 
-subroutine write_inp(idinp,idout,atom)
+subroutine write_inp!(idinp,idout,atom)
+    use init
     use def
-    use init,only: natom,nele,chr,spinmul,nele_alpha,nele_beta
-    integer idinp,idout
-    type(atomtype) :: atom(natom)
+    !use init,only: natom,nele,chr,spinmul,nele_alpha,nele_beta
+    !integer idinp,idout
+    !type(atomtype) :: atom(natom)
     nele=sum(atom%index)-chr
     write(idout,*) "The number of atoms:" ,natom
     write(idout,*) "The number of electrons:" ,nele
@@ -117,11 +121,13 @@ end subroutine
 
 
 
-subroutine get_bas_para(idbas,nshl,nprim,nbas,atom,natom)
+subroutine get_bas_para!(idbas,nshl,nprim,nbas,atom,natom)
+    use init
     use def
     implicit real*8(a-h,o-z)
-    integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom
-    type(atomtype) :: atom(natom)
+    !integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom
+    integer :: iatom,ifound
+    !type(atomtype) :: atom(natom)
     character*20 :: c20
     character*2 :: shell
     character*200 :: c200
@@ -167,13 +173,15 @@ subroutine get_bas_para(idbas,nshl,nprim,nbas,atom,natom)
 end subroutine
 
 
-subroutine read_bas(idbas,idout,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
+subroutine read_bas!(idbas,idout,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
+    use init
     use def
     implicit real*8(a-h,o-z)
-    integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom,idout
-    integer cntr_odr(nshl),angl(nshl),shl_belong_to_atom(nshl),sh_indx(nshl)
-    real*8 expnt(nprim),coeff(nprim)
-    type(atomtype) :: atom(natom)
+    ! integer :: idbas,nshl,nbas,iatom,nprim,ifound,natom,idout
+    integer :: iatom,ifound
+    !integer cntr_odr(nshl),angl(nshl),shl_belong_to_atom(nshl),sh_indx(nshl)
+    !real*8 expnt(nprim),coeff(nprim)
+    !type(atomtype) :: atom(natom)
     character*20 :: c20
     character*2 :: shell
     character*200 :: c200
@@ -329,10 +337,11 @@ end subroutine
 
 
 
-subroutine out_init(idout,filepath)
+subroutine out_init!(idout,filepath)
+    use init
     implicit none
-    integer idout
-    character*200 filepath
+    ! integer idout
+    ! character*200 filepath
     character nowdate*20,nowtime*20
     
     write(idout,"(a)") "##########################################################################"
@@ -356,9 +365,10 @@ end subroutine
 
 
 
-subroutine error_end(idout,massage)
+subroutine error_end(massage)
+    use init
     implicit none
-    integer idout
+    !integer idout
     character(len=*) massage
     character nowdate*20,nowtime*20
 
@@ -372,9 +382,10 @@ subroutine error_end(idout,massage)
 end subroutine
 
 
-subroutine normal_end(idout)
+subroutine normal_end!(idout)
+    use init
     implicit none
-    integer idout
+    !integer idout
     character nowdate*20,nowtime*20
 
     write(idout,"(a)") "----------------------------------------"

@@ -93,7 +93,7 @@ program wQC
     
     basispath=trim(adjustl(workpath))//"basis/"//trim(adjustl(basset))//".gbs"
     open(20,file=basispath,status="old")
-    call get_bas_para(20,nshl,nprim,nbas,atom,natom)
+    call get_bas_para!(20,nshl,nprim,nbas,atom,natom)
     ! write(15,*) 'The number of shells=',nshl
     ! write(15,*) 'The number of primitive Gaussian function=',nprim
     
@@ -112,7 +112,7 @@ program wQC
     ! geom(3,:)=atom(:)%z
     ! charge=atom%charge
     
-    call read_bas(20,15,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
+    call read_bas!(20,15,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_belong_to_atom,sh_indx,expnt,coeff)
     
     !write(15,*) "nbas=",nbas
     ! nbas2=nbas
@@ -125,7 +125,7 @@ program wQC
     ! allocate(eri(nbas,nbas,nbas,nbas))
 
     
-    call cal_eint(nbas,natom,nprim,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
+    call cal_eint!(nbas,natom,nprim,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
 
     ! write(*,*) "nbas1=",nbas
     ! write(*,*) "nele1=",nele
@@ -139,7 +139,7 @@ program wQC
  !       write(*,*) 'wrong'
  !   end if
     
-    call cal_nucp(15,atom,natom,nucp)
+    call cal_nucp!(15)!,atom,natom,nucp)
     !write(15,*) "nucp=",nucp
     ! allocate(C(nbas,nbas))
     ! allocate(D(nbas,nbas))
@@ -149,7 +149,7 @@ program wQC
     ! allocate(D_beta(nbas,nbas))
     ! allocate(E_beta(nbas))
     !write(*,*) "nele_alpha=",nele_alpha
-    call RHF(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
+    call RHF!(15,nbas,nele,nucp,S,T,V,eri,D,E,C)
     !call RHF_DIIS(15,nbas,nele,nucp,S,T,V,eri,D,E,C,12)
     !call UHF(15,nbas,nele_alpha,nele_beta,nucp,S,T,V,eri,D_alpha,D_beta,E_alpha,E_beta)
     

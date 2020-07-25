@@ -15,12 +15,6 @@ math.o: math.f90
 math.mod: math.f90 math.o
 	${FC} -c math.f90 -mkl
 
-cint.o: cint.f90
-	${FC} -c cint.f90 -lcint
-
-cint.mod: cint.f90 cint.o
-	${FC} -c cint.f90 -lcint
-
 def.o: def.f90
 	${FC} -c def.f90 
 
@@ -38,6 +32,12 @@ init.o: init.f90 def.mod
 	
 init.mod: init.f90 init.o def.mod
 	${FC} -c init.f90 
+
+cint.o: cint.f90 init.mod
+	${FC} -c cint.f90 -lcint
+
+cint.mod: cint.f90 cint.o init.mod
+	${FC} -c cint.f90 -lcint
 
 HF.o: HF.f90 geo.mod math.mod def.mod
 	${FC} -c HF.f90 -mkl #geo.mod math.mod def.mod -mkl 

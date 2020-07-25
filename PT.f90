@@ -11,13 +11,15 @@
 
 
 
-subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
+subroutine MP2!(idout,nbas,nele,E,C,eri,E_mp2)
+    use init
     implicit none
-    integer idout,nbas,nele
+    !integer idout,nbas,nele
     integer sigma,mu,lambda,nu
-    integer p,q,r,s
+    integer p,q,r,s1
     integer i,j,ia,ib
-    real(kind=8) :: E(nbas),C(nbas,nbas),eri(nbas,nbas,nbas,nbas),E_mp2
+    !real(kind=8) :: E(nbas),C(nbas,nbas),eri(nbas,nbas,nbas,nbas),E_mp2
+    real(kind=8) :: E_mp2
     real(kind=8) :: erimo(nbas,nbas,nbas,nbas)
     real(kind=8) sum1,sum2,sum3
 
@@ -36,12 +38,12 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
     do p=1,nbas
         do q=1,nbas
             do r=1,nbas
-                do s=1,nbas
+                do s1=1,nbas
                     do mu=1,nbas
                         do nu=1,nbas
                             do lambda=1,nbas
                                 do sigma=1,nbas
-                                    sum1=sum1+C(sigma,s)*eri(mu,nu,lambda,sigma)
+                                    sum1=sum1+C(sigma,s1)*eri(mu,nu,lambda,sigma)
                                 end do
                                 sum2=sum2+C(lambda,r)*sum1
                                 sum1=0
@@ -49,7 +51,7 @@ subroutine MP2(idout,nbas,nele,E,C,eri,E_mp2)
                             sum3=sum3+C(nu,q)*sum2
                             sum2=0
                         end do
-                        erimo(p,q,r,s)=erimo(p,q,r,s)+C(mu,p)*sum3
+                        erimo(p,q,r,s1)=erimo(p,q,r,s1)+C(mu,p)*sum3
                         sum3=0
                     end do
                 end do

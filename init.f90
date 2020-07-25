@@ -52,12 +52,19 @@ module init
                           E_alpha(:),& !eigenvalue of alpha electron orbital
                           E_beta(:) !eigenvalue of beta electron orbital
 
+    real*8 E_ele,E_tot
+
+    integer ndiis
+
     integer norder !number of orders
     character*20,allocatable :: order(:) !all orders 
     
     real*8 nucp !nuclear repulsion energy
 
 
+    integer,parameter :: idinp=10 ! id of input file (XXX.inp)
+    integer,parameter :: idout=15 ! id of output file (XXX.out)
+    integer,parameter :: idbas=20 ! id of basis-set file (XXX.gbs)
 
 
     contains

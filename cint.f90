@@ -114,20 +114,26 @@ contains
     end subroutine normalize
     
     
-    subroutine cal_eint(nbas,natm,nprm,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
+    subroutine cal_eint!(nbas,natm,nprm,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom,S,T,V,eri)
+        use init
         implicit none
-        integer :: idbas,nshl,nbas,iatom,nprm,ifound,natm
-        integer cntr_odr(nshl),angl(nshl),shl_belong_to_atom(nshl),sh_indx(nshl),charge(natm)
-        real*8 expnt(nprm),coeff(nprm),geom(3,natm)
+        !integer :: idbas,nshl,nbas,iatom,nprm,ifound,natm
+        integer :: iatom,nprm,ifound,natm
+        !integer cntr_odr(nshl),angl(nshl),shl_belong_to_atom(nshl),sh_indx(nshl),charge(natm)
+        !real*8 expnt(nprm),coeff(nprm),geom(3,natm)
         integer :: i, j, k, l, di, dj, dk, dl, x, y, z, w
-        real*8  S(nbas,nbas)
-        real*8  T(nbas,nbas)
-        real*8  V(nbas,nbas)
-        real*8  eri(nbas,nbas,nbas,nbas)
+        ! real*8  S(nbas,nbas)
+        ! real*8  T(nbas,nbas)
+        ! real*8  V(nbas,nbas)
+        ! real*8  eri(nbas,nbas,nbas,nbas)
         real*8, dimension(:,:), allocatable :: buf1e
         real*8, dimension(:,:,:,:), allocatable :: buf2e
         integer :: shls1(2),shls2(4)
         integer, external :: CINTcgto_spheric
+
+        natm=natom
+        nprm=nprim
+        
         
         call set_libcint_input(natm,nprm,nshl,cntr_odr,charge,angl,shl_belong_to_atom,sh_indx,expnt,coeff,geom)
     
