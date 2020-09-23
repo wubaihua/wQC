@@ -30,6 +30,7 @@ module init
     integer nshl !number of shells
     integer nprim !number of primitive Gaussian functions
     integer nbas !number of basis functions
+    integer nspinorb !number of spin orbitals 
     integer,allocatable :: cntr_odr(:) !number of primitive gaussian function of each shell
     integer,allocatable :: angl(:) !angular momentum of shell
     integer,allocatable :: shl_belong_to_atom(:) !shell belongs to atom
@@ -42,6 +43,11 @@ module init
                           T(:,:),& !kinetic matrix 
                           V(:,:),& !potential matrix
                           eri(:,:,:,:) !electron repulsion integral (2-e integral)
+
+    real*8,allocatable :: erimo(:,:,:,:),&
+                          spinorb_inte(:,:,:,:)
+
+
     real*8,allocatable :: C(:,:),& !coefficient matrix of orbital
                           D(:,:),& !density matrix of orbital
                           E(:) !eigenvalue of orbital
@@ -122,6 +128,13 @@ module init
 
     end subroutine
 
+
+    subroutine init_postHF
+        allocate(erimo(nbas,nbas,nbas,nbas))
+        allocate(spinorb_inte(nspinorb,nspinorb,nspinorb,nspinorb))
+        
+
+    end subroutine
    
 
 

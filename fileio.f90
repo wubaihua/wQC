@@ -286,6 +286,8 @@ subroutine read_bas!(idbas,idout,nshl,nprim,nbas,atom,natom,cntr_odr,angl,shl_be
     write(idout,*) 'The number of shells=',nshl
     write(idout,*) 'The number of primitive Gaussian functions=',nprim
     write(idout,*) 'The number of basis functions=',nbas
+
+    nspinorb=2*nbas
     
     !write(*,*) "cntr_odr=",cntr_odr
     !write(*,*) "angl=",angl

@@ -167,7 +167,7 @@ program wQC
     ! write(*,*) "nshl=",nshl
     ! write(*,*) "natom=",natom
 
-    !call MP2(15,nbas,nele,E,C,eri,E_mp2)
+    call MP2!(15,nbas,nele,E,C,eri,E_mp2)
 
     call cpu_time(t2)
     write(15,*) "Job Time:",t2-t1,"Seconds"
