@@ -58,6 +58,9 @@ module init
                           E_alpha(:),& !eigenvalue of alpha electron orbital
                           E_beta(:) !eigenvalue of beta electron orbital
 
+    real*8,allocatable :: cis_ham(:,:),cis_c(:,:),cis_e(:)
+    real*8,allocatable :: spinFock(:,:) 
+
     real*8 E_ele,E_tot
 
     integer ndiis

@@ -117,36 +117,60 @@ subroutine box_muller(x1,x2,sigma,miu)
     x2=x2*sigma+miu
 end subroutine
    
-
-
-
-
-subroutine heaviside(x,h)
-    implicit none
-    real*8  h,x
-    if(x<0)then
-        h=0
+function Kronecker_delta(i,j)
+    integer Kronecker_delta,i,j
+    if(i==j)then
+        Kronecker_delta=1
     else
-        h=1
+        Kronecker_delta=0
+    end if
+    
+end function
+
+
+
+function heaviside(x)
+    implicit none
+    real*8 x
+    integer heaviside
+    if(x<0)then
+        heaviside=0
+    else
+        heaviside=1
     end if
     
 
-end subroutine
+end function
 
 
 
-subroutine window1_pccp(gamma,n1,n2,w1,w2)
-    implicit none
+
+! subroutine heaviside(x,h)
+!     implicit none
+!     real*8  h,x
+!     if(x<0)then
+!         h=0
+!     else
+!         h=1
+!     end if
     
-    real*8 n1,n2,w1,w2,gamma,h1,h2
+
+! end subroutine
+
+
+
+! subroutine window1_pccp(gamma,n1,n2,w1,w2)
+!     implicit none
     
-    call heaviside(gamma-abs(n1-1),h1)
-    w1=1/(2*gamma)*h1
-    call heaviside(gamma-abs(n1),h2)
-    w2=1/(2*gamma)*h2
+!     real*8 n1,n2,w1,w2,gamma,h1,h2
+    
+!     call heaviside(gamma-abs(n1-1),h1)
+!     w1=1/(2*gamma)*h1
+!     call heaviside(gamma-abs(n1),h2)
+!     w2=1/(2*gamma)*h2
 
 
-end subroutine
+! end subroutine
 
 !Diagonal symmetric matrix
 subroutine dia_symmat(n,A,E,C)

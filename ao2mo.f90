@@ -64,7 +64,7 @@ subroutine build_spinorb_inte
         end do
     end do
 
-    write(*,*) spinorb_inte
+    ! write(*,*) spinorb_inte
 
 end subroutine
 

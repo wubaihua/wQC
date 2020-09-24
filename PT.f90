@@ -82,17 +82,17 @@ subroutine MP2!(idout,nbas,nele,E,C,eri,E_mp2)
     write(idout,"(a)") "---------------------------------------------------"
 
 
-    call build_spinorb_inte
-    E_mp2=0
-    do i=1,nele
-        do j=1,nele
-            do k=nele+1,nspinorb
-                do l=nele+1,nspinorb
-                    E_mp2=E_mp2+0.25*(spinorb_inte(i,j,k,l)-spinorb_inte(i,j,l,k))**2/(E(index_spatial2spin(i))+E(index_spatial2spin(j))-E(index_spatial2spin(k))-E(index_spatial2spin(l)))
-                end do
-            end do
-        end do
-    end do
-   write(*,*) E_mp2
+!     call build_spinorb_inte
+!     E_mp2=0
+!     do i=1,nele
+!         do j=1,nele
+!             do k=nele+1,nspinorb
+!                 do l=nele+1,nspinorb
+!                     E_mp2=E_mp2+0.25*(spinorb_inte(i,j,k,l)-spinorb_inte(i,j,l,k))**2/(E(index_spatial2spin(i))+E(index_spatial2spin(j))-E(index_spatial2spin(k))-E(index_spatial2spin(l)))
+!                 end do
+!             end do
+!         end do
+!     end do
+!    write(*,*) E_mp2
 
 end subroutine
