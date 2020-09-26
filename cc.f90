@@ -2,7 +2,7 @@ subroutine ccsd
     use init
     use math
     implicit real*8(a-h,o-z)
-    real*8,allocatable :: t1(:,:),t2(:,:,:,:)
+    real*8,allocatable :: t1(:,:),t2(:,:,:,:), t1_0(:,:),t2_0(:,:,:,:)
     real*8,allocatable :: F_ccsd(:,:),W_ccsd(:,:,:,:)
     real*8,allocatable :: tau(:,:,:,:),tau_tilde(:,:,:,:)
     real*8,allocatable :: D1(:,:),D2(:,:,:,:)
@@ -14,6 +14,8 @@ subroutine ccsd
 
     allocate(t1(nspinorb,nspinorb))
     allocate(t2(nspinorb,nspinorb,nspinorb,nspinorb))
+    allocate(t1_0(nspinorb,nspinorb))
+    allocate(t2_0(nspinorb,nspinorb,nspinorb,nspinorb))
     allocate(F_ccsd(nspinorb,nspinorb))
     allocate(W_ccsd(nspinorb,nspinorb,nspinorb,nspinorb))
     allocate(tau(nspinorb,nspinorb,nspinorb,nspinorb))
@@ -46,6 +48,8 @@ subroutine ccsd
             end do
         end do
     end do
+    t1_0=t1
+    t2_0=t2
 
     E_ccsd=0
     do i=1,nele
@@ -175,6 +179,88 @@ subroutine ccsd
             end do
         end do
     end do
+
+    t1=0
+    do i=1,nele
+        do ia=nele+1,nspinorb
+            t1(i,ia)=spinfock(i,ia)!1
+            do ie=nele+1,nspinorb
+                t1(i,ia)=t1(i,ia)+t1_0(i,ie)*F_ccsd(ia,ie)!2
+            end do
+            do m=1,nele
+                t1(i,ia)=t1(i,ia)-t1_0(m,ia)*F_ccsd(m,i)!3
+                do ie=nele+1,nspinorb
+                    t1(i,ia)=t1(i,ia)+t2_0(i,m,ia,ie)*F_ccsd(m,ie)!4
+                    do n=1,nele
+                        t1(i,ia)=t1(i,ia)-0.5*t2_0(m,n,ia,ie)*(spinorb_inte(m,n,ie,i)-spinorb_inte(m,n,i,ie))!7
+                    end do
+                    do jf=nele+1,nspinorb
+                        t1(i,ia)=t1(i,ia)-0.5*t2_0(i,m,ie,jf)*(spinorb_inte(m,ia,ie,jf)-spinorb_inte(m,ia,jf,ie))!6
+                    end do
+                end do
+            end do
+            do jf=nele+1,nspinorb
+                do n=1,nele
+                    t1(i,ia)=t1(i,ia)-t1_0(n,jf)*(spinorb_inte(n,ia,i,jf)-spinorb_inte(n,ia,jf,i))!5
+                end do
+            end do
+            t1(i,ia)=t1(i,ia)/D1(i,ia)
+        end do
+    end do
+
+    t2=0
+    do i=1,nele
+        do j=1,nele
+            do ia=nele+1,nspinorb
+                do ib=nele+1,nspinorb
+                    t2(i,j,ia,ib)=spinorb_inte(i,j,ia,ib)-spinorb_inte(i,j,ib,ia)!1
+                    
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)+dot_product(t2_0(i,j,ia,(nele+1):nspinorb),F_ccsd(ib,(nele+1):nspinorb))-dot_product(t2_0(i,j,ib,(nele+1):nspinorb),F_ccsd(ia,(nele+1):nspinorb))!2-1
+                    
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t2_0(i,1:nele,ia,ib),F_ccsd(1:nele,j))-dot_product(t2_0(j,1:nele,ia,ib),F_ccsd(1:nele,i))!3-1
+                    
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)+dot_product(t1_0(i,(nele+1):nspinorb),spinorb_inte(ia,ib,(nele+1):nspinorb,j)-spinorb_inte(ia,ib,j,(nele+1):nspinorb)) &
+                                               -dot_product(t1_0(j,(nele+1):nspinorb),spinorb_inte(ia,ib,(nele+1):nspinorb,i)-spinorb_inte(ia,ib,i,(nele+1):nspinorb)) !7
+                    
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t1_0(1:nele,ia),spinorb_inte(1:nele,ib,i,j)-spinorb_inte(1:nele,ib,j,i)) &
+                                               +dot_product(t1_0(1:nele,ib),spinorb_inte(1:nele,ia,i,j)-spinorb_inte(1:nele,ia,j,i)) !8
+
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-0.5*mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t2_0(i,j,ia,(nele+1):nspinorb),F_ccsd(1:nele,(nele+1):nspinorb))&
+                                               +0.5*mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ia)*t2_0(i,j,ib,(nele+1):nspinorb),F_ccsd(1:nele,(nele+1):nspinorb))!2-2
+
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-0.5*mat_dotprod(nele,nspinorb-nele,t2_0(i,1:nele,ia,ib)*t1_0(j,(nele+1):nspinorb),F_ccsd(1:nele,(nele+1):nspinorb))&
+                                               +0.5*mat_dotprod(nele,nspinorb-nele,t2_0(j,1:nele,ia,ib)*t1_0(i,(nele+1):nspinorb),F_ccsd(1:nele,(nele+1):nspinorb))!3-2
+
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)+0.5*mat_dotprod(nele,nele,tau(1:nele,1:nele,ia,ib),W_ccsd(1:nele,1:nele,i,j))&!4
+                                               +0.5*mat_dotprod(nspinorb-nele,nspinorb-nele,tau(i,j,(nele+1):nspinorb,(nele+1):nspinorb),W_ccsd(ia,ib,(nele+1):nspinorb,(nele+1):nspinorb))!5
+
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)+mat_dotprod(nele,nspinorb-nele,t2_0(i,1:nele,ia,(nele+1):nspinorb),W_ccsd(1:nele,ib,(nele+1):nspinorb,j))&
+                                               -mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ia)*t1_0(i,(nele+1):nspinorb),spinorb_inte(1:nele,ib,(nele+1):nspinorb,j)-spinorb_inte(1:nele,ib,j,(nele+1):nspinorb))&
+                                               
+                                               -mat_dotprod(nele,nspinorb-nele,t2_0(j,1:nele,ia,(nele+1):nspinorb),W_ccsd(1:nele,ib,(nele+1):nspinorb,i))&
+                                               +mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ia)*t1_0(j,(nele+1):nspinorb),spinorb_inte(1:nele,ib,(nele+1):nspinorb,i)-spinorb_inte(1:nele,ib,i,(nele+1):nspinorb))&
+                                               
+                                               -mat_dotprod(nele,nspinorb-nele,t2_0(i,1:nele,ib,(nele+1):nspinorb),W_ccsd(1:nele,ia,(nele+1):nspinorb,j))&
+                                               +mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(i,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,j)-spinorb_inte(1:nele,ia,j,(nele+1):nspinorb))&
+                                               
+                                               +mat_dotprod(nele,nspinorb-nele,t2_0(j,1:nele,ib,(nele+1):nspinorb),W_ccsd(1:nele,ia,(nele+1):nspinorb,i))&
+                                               -mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(j,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,i)-spinorb_inte(1:nele,ib,i,(nele+1):nspinorb))!6                
+
+
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)/D2(i,j,ia,ib)
+
+
+                end do
+            end do
+        end do
+    end do
+
+    E_ccsd=0
+    do i=1,nele
+        do ia=nele+1,nspinorb
+            do j=1,nele
+                do ib=nele+1,nspinorb
+                    E_ccsd
 
 
 

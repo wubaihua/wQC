@@ -230,6 +230,22 @@ subroutine mat_dot_prod(n,A,B,x)
     end do
 
 end subroutine
+function mat_dotprod(m,n,A,B)
+    implicit none
+    integer i,m,n,j
+    real*8,intent(in) :: A(m,n),B(m,n)
+    real*8 x,mat_dotprod
+    
+    x=0
+    do i=1,m
+        do j=1,n
+            x=x+A(i,j)*B(i,j)
+        end do
+    end do
+
+    mat_dotprod=x
+
+end function
 
 
 !save the linear equation set :Ax=b
