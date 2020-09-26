@@ -26,7 +26,7 @@ subroutine cis
             end if
         end do
     end do
-    ! write(*,*) spinfock
+    write(*,*) spinfock(1,1),spinfock(nele+1,nele+1),spinorb_inte(nele+1,1,1,nele+1)-spinorb_inte(nele+1,1,nele+1,1)
 
     index1=0
     index2=0
@@ -43,11 +43,13 @@ subroutine cis
         end do
     end do
 
-    ! write(*,*) cis_ham
+    ! do i=1,n_single_exci
+    !     write(*,*) cis_ham(i,:)
+    ! end do
 
-    call dia_symmat( n_single_exci,cis_ham,cis_e,cis_c)
+    ! call dia_symmat( n_single_exci,cis_ham,cis_e,cis_c)
 
-    write(*,*) cis_e*27.21138602
+    ! write(*,*) cis_e*27.21138602
 
 
 
