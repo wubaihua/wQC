@@ -36,6 +36,7 @@ subroutine ccsd
             end if
         end do
     end do
+    ! write(*,*) spinfock(1,1),spinfock(1,2),spinfock(2,1),spinfock(2,2)
 
     t1=0
     t2=0
@@ -63,6 +64,7 @@ subroutine ccsd
     end do
     write(*,*) E_ccsd
 
+do i_iter=1,1
     tau=0
     tau_tilde=0
     do i=1,nele
@@ -139,7 +141,7 @@ subroutine ccsd
                 do jf=nele+1,nspinorb
                     W_ccsd(ia,ib,ie,jf)=spinorb_inte(ia,ib,ie,jf)-spinorb_inte(ia,ib,jf,ie)
                     do m=1,nele
-                        W_ccsd(ia,ib,ie,jf)=W_ccsd(ia,ib,ie,jf)+t1(m,ib)*(spinorb_inte(ia,m,ie,jf)-spinorb_inte(ia,m,jf,ie))-t1(m,ia)*(spinorb_inte(ib,m,ie,jf)-spinorb_inte(ib,m,jf,ie))
+                        W_ccsd(ia,ib,ie,jf)=W_ccsd(ia,ib,ie,jf)-t1(m,ib)*(spinorb_inte(ia,m,ie,jf)-spinorb_inte(ia,m,jf,ie))+t1(m,ia)*(spinorb_inte(ib,m,ie,jf)-spinorb_inte(ib,m,jf,ie))
                         do n=1,nele
                             W_ccsd(ia,ib,ie,jf)=W_ccsd(ia,ib,ie,jf)+0.25*tau(m,n,ia,ib)*(spinorb_inte(m,n,ie,jf)-spinorb_inte(m,n,jf,ie))
                         end do
@@ -151,7 +153,7 @@ subroutine ccsd
     do m=1,nele
         do ib=nele+1,nspinorb
             do ie=nele+1,nspinorb
-                do j=i,nele
+                do j=1,nele
                     W_ccsd(m,ib,ie,j)=spinorb_inte(m,ib,ie,j)-spinorb_inte(m,ib,j,ie)
                     do jf=nele+1,nspinorb
                         W_ccsd(m,ib,ie,j)=W_ccsd(m,ib,ie,j)+t1(j,jf)*(spinorb_inte(m,ib,ie,jf)-spinorb_inte(m,ib,jf,ie))
@@ -204,9 +206,11 @@ subroutine ccsd
                     t1(i,ia)=t1(i,ia)-t1_0(n,jf)*(spinorb_inte(n,ia,i,jf)-spinorb_inte(n,ia,jf,i))!5
                 end do
             end do
-            t1(i,ia)=t1(i,ia)/D1(i,ia)
+            ! t1(i,ia)=t1(i,ia)/D1(i,ia)
         end do
     end do
+    ! t1=t1/D1
+    ! write(*,*) t1(1:nele,nele+1:nspinorb)
 
     t2=0
     do i=1,nele
@@ -244,24 +248,39 @@ subroutine ccsd
                                                +mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(i,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,j)-spinorb_inte(1:nele,ia,j,(nele+1):nspinorb))&
                                                
                                                +mat_dotprod(nele,nspinorb-nele,t2_0(j,1:nele,ib,(nele+1):nspinorb),W_ccsd(1:nele,ia,(nele+1):nspinorb,i))&
-                                               -mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(j,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,i)-spinorb_inte(1:nele,ib,i,(nele+1):nspinorb))!6                
+                                               -mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(j,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,i)-spinorb_inte(1:nele,ia,i,(nele+1):nspinorb))!6                
 
 
-                    t2(i,j,ia,ib)=t2(i,j,ia,ib)/D2(i,j,ia,ib)
+                    ! t2(i,j,ia,ib)=t2(i,j,ia,ib)/D2(i,j,ia,ib)
 
+                    ! write(*,*) t2(i,j,ia,ib)
+                end do
+            end do
+        end do
+    end do
+    t2=t2/D2
 
+    E_ccsd=0
+    do i=1,nele
+        do ia=nele+1,nspinorb
+            E_ccsd=E_ccsd+spinfock(i,ia)*t1(i,ia)
+            ! write(*,*) E_ccsd,spinfock(i,ia),t1(i,ia)
+            do j=1,nele
+                do ib=nele+1,nspinorb
+                    E_ccsd=E_ccsd+(0.25*t2(i,j,ia,ib)+0.5*t1(i,ia)*t1(j,ib))*(spinorb_inte(i,j,ia,ib)-spinorb_inte(i,j,ib,ia))
+                    ! write(*,*) E_ccsd,t2(i,j,ia,ib),t1(i,ia)*t1(j,ib)
                 end do
             end do
         end do
     end do
 
-    E_ccsd=0
-    do i=1,nele
-        do ia=nele+1,nspinorb
-            do j=1,nele
-                do ib=nele+1,nspinorb
-                    E_ccsd
-
+    write(*,*) E_ccsd
+    ! write(*,*) spinfock(1:nele,nele+1:nspinorb)
+    ! write(*,*) t1(1:nele,nele+1:nspinorb)
+    ! write(*,*) D1(1:nele,nele+1:nspinorb)
+    t1_0=t1
+    t2_0=t2
+end do
 
 
 end subroutine
