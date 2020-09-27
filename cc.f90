@@ -221,12 +221,12 @@ do i_iter=1,1
                     
                     t2(i,j,ia,ib)=t2(i,j,ia,ib)+dot_product(t2_0(i,j,ia,(nele+1):nspinorb),F_ccsd(ib,(nele+1):nspinorb))-dot_product(t2_0(i,j,ib,(nele+1):nspinorb),F_ccsd(ia,(nele+1):nspinorb))!2-1
                     
-                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t2_0(i,1:nele,ia,ib),F_ccsd(1:nele,j))-dot_product(t2_0(j,1:nele,ia,ib),F_ccsd(1:nele,i))!3-1
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t2_0(i,1:nele,ia,ib),F_ccsd(1:nele,j))+dot_product(t2_0(j,1:nele,ia,ib),F_ccsd(1:nele,i))!3-1
                     
                     t2(i,j,ia,ib)=t2(i,j,ia,ib)+dot_product(t1_0(i,(nele+1):nspinorb),spinorb_inte(ia,ib,(nele+1):nspinorb,j)-spinorb_inte(ia,ib,j,(nele+1):nspinorb)) &
-                                               -dot_product(t1_0(j,(nele+1):nspinorb),spinorb_inte(ia,ib,(nele+1):nspinorb,i)-spinorb_inte(ia,ib,i,(nele+1):nspinorb)) !7
+                                               -dot_product(t1_0(j,(nele+1):nspinorb),spinorb_inte(ia,ib,(nele+1):nspinorb,i)+spinorb_inte(ia,ib,i,(nele+1):nspinorb)) !7
                     
-                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t1_0(1:nele,ia),spinorb_inte(1:nele,ib,i,j)-spinorb_inte(1:nele,ib,j,i)) &
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)-dot_product(t1_0(1:nele,ia),spinorb_inte(1:nele,ib,i,j)+spinorb_inte(1:nele,ib,j,i)) &
                                                +dot_product(t1_0(1:nele,ib),spinorb_inte(1:nele,ia,i,j)-spinorb_inte(1:nele,ia,j,i)) !8
 
                     t2(i,j,ia,ib)=t2(i,j,ia,ib)-0.5*mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t2_0(i,j,ia,(nele+1):nspinorb),F_ccsd(1:nele,(nele+1):nspinorb))&
@@ -251,14 +251,14 @@ do i_iter=1,1
                                                -mat_dotprod(nele,nspinorb-nele,t1_0(1:nele,ib)*t1_0(j,(nele+1):nspinorb),spinorb_inte(1:nele,ia,(nele+1):nspinorb,i)-spinorb_inte(1:nele,ia,i,(nele+1):nspinorb))!6                
 
 
-                    ! t2(i,j,ia,ib)=t2(i,j,ia,ib)/D2(i,j,ia,ib)
+                    t2(i,j,ia,ib)=t2(i,j,ia,ib)/D2(i,j,ia,ib)
 
                     ! write(*,*) t2(i,j,ia,ib)
                 end do
             end do
         end do
     end do
-    t2=t2/D2
+    ! t2=t2/D2
 
     E_ccsd=0
     do i=1,nele
